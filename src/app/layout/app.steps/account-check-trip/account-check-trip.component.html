@@ -1,0 +1,207 @@
+<form role="form" #actForm="ngForm" novalidate>
+    <div class="steps-content">
+        <p-card>
+            <ng-template pTemplate="title">
+                <span class="text-5xl">
+                    Rider Information
+                </span>
+            </ng-template>
+            <ng-template pTemplate="subtitle">
+                <span class="text-3xl mb-0 font-italic font-semibold">
+                    Note: Please enter your personal information
+                </span>
+            </ng-template>
+
+            <ng-template *ngIf="ticketService.ticketInformation.accountOption.existing" pTemplate="content">
+                <div class="p-fluid">
+                    <div class="grid">
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="firstname"
+                                    class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    First Name
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input #fname1 name="firstName1" #firstname="ngModel" id="firstname" type="text"
+                                        required pInputText class="text-5xl" ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                                        #firstnameKeyboard="ngxTouchKeyboard" (focus)="firstnameKeyboard.openPanel()"
+                                        (blur)="firstnameKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.firstname"
+                                        [ngClass]="{ 'ng-dirty': (firstname.invalid && submitted) || (firstname.dirty && firstname.invalid) }"
+                                        maxlength="40" />
+                                </div>
+                                <div class="col-offset-4 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="firstname.invalid">
+                                        First Name is required
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="email"
+                                    class="mb-2 md:col-2 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    Email
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="email" #email="ngModel" id="email" type="text" email="true"
+                                        [required]="true" pInputText class="text-5xl" ngxTouchKeyboard
+                                        ngxTouchKeyboardFullScreen inputmode="email" #emailKeyboard="ngxTouchKeyboard"
+                                        (focus)="emailKeyboard.openPanel()" (blur)="emailKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.email"
+                                        [ngClass]="{ 'ng-dirty': (email.invalid && submitted) || (email.dirty && email.invalid) }"
+                                        maxlength="128" />
+                                </div>
+                                <div class="col-offset-2 md:col-8 p-0 pl-1">
+                                    <span class="p-error"
+                                        *ngIf="!ticketService.ticketInformation.personalInformation.email">
+                                        Email is required
+                                    </span> <span class="p-error"
+                                        *ngIf="ticketService.ticketInformation.personalInformation.email && email.invalid">
+                                        Email is invalid
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="lastname"
+                                    class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    Last Name
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="lastName1" #lastname="ngModel" id="lastname" pInputText
+                                        class="text-5xl" type="text" required ngxTouchKeyboard
+                                        ngxTouchKeyboardFullScreen #lastnameKeyboard="ngxTouchKeyboard"
+                                        (focus)="lastnameKeyboard.openPanel()" (blur)="lastnameKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.lastname"
+                                        [ngClass]="{ 'ng-dirty': (lastname.invalid && submitted) || (lastname.dirty && lastname.invalid) }"
+                                        maxlength="40" />
+                                </div>
+                                <div class="col-offset-4 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="lastname.invalid">
+                                        Last Name is required
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label for="phone"
+                                    class="mb-2 md:col-2 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    Phone
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="phone" #phone="ngModel" id="phone" class="text-5xl" type="text"
+                                        [required]="true" pInputText pKeyFilter="num" maxlength="10" ngxTouchKeyboard
+                                        ngxTouchKeyboardFullScreen inputmode="tel" #phoneKeyboard="ngxTouchKeyboard"
+                                        (focus)="phoneKeyboard.openPanel()" (blur)="phoneKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.phone"
+                                        pattern="^[0-9]{10}$"
+                                        [ngClass]="{'ng-dirty': (phone.invalid && submitted) || (phone.dirty && phone.invalid) }" />
+                                </div>
+                                <div class="col-offset-2 md:col-8 p-0 pl-1">
+                                    <span class="p-error"
+                                        *ngIf="!ticketService.ticketInformation.personalInformation.phone">
+                                        Phone is required
+                                    </span> <span class="p-error"
+                                        *ngIf="ticketService.ticketInformation.personalInformation.phone && phone.invalid">
+                                        Phone number is invalid (please enter 10 digits)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template *ngIf="!ticketService.ticketInformation.accountOption.existing" pTemplate="content">
+                <div class="p-fluid">
+                    <div class="grid">
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="firstname"
+                                    class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    First Name
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="firstName2" #fname2 #firstname="ngModel" id="firstname" type="text"
+                                        required pInputText class="text-5xl" ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                                        #firstnameKeyboard="ngxTouchKeyboard" (focus)="firstnameKeyboard.openPanel()"
+                                        (blur)="firstnameKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.firstname"
+                                        [ngClass]="{ 'ng-dirty': (firstname.invalid && submitted) || (firstname.dirty && firstname.invalid) }"
+                                        maxlength="40" />
+                                </div>
+                                <div class="col-offset-4 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="firstname.invalid">
+                                        First Name is required
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <!-- <div class="field grid">
+                                <label htmlFor="tripid" class="mb-2 md:col-2 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    Trip ID
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="tripId" #tripid="ngModel" id="tripid" type="text" required pInputText
+                                        class="text-5xl" ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                                        #tripidKeyboard="ngxTouchKeyboard" (focus)="tripidKeyboard.openPanel()"
+                                        (blur)="tripidKeyboard.closePanel()" [(ngModel)]="ticketService.ticketInformation.personalInformation.tripid"
+                                        [ngClass]="{ 'ng-dirty': (tripid.invalid && submitted) || (tripid.dirty && tripid.invalid) }"
+                                        maxlength="20" />
+                                </div>
+                                <div class="col-offset-2 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="tripid.invalid">
+                                        Trip ID is required
+                                    </span>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="lastname"
+                                    class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    Last Name
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="lastName2" #lastname="ngModel" id="lastname" type="text" required
+                                        pInputText class="text-5xl" ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                                        #lastnameKeyboard="ngxTouchKeyboard" (focus)="lastnameKeyboard.openPanel()"
+                                        (blur)="lastnameKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.lastname"
+                                        [ngClass]="{ 'ng-dirty': (lastname.invalid && submitted) || (lastname.dirty && lastname.invalid) }"
+                                        maxlength="40" />
+                                </div>
+                                <div class="col-offset-4 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="lastname.invalid">
+                                        Last Name is required
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6"></div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <div class="grid grid-nogutter justify-content-between">
+                    <button pButton pRipple label="Back" (click)="prevPage()" icon="pi pi-angle-left"
+                        class="p-button-lg p-button-raised h-5rem text-4xl font-semibold" [disabled]="checking">
+                    </button>
+                    <button pButton pRipple label="Next" *ngIf="!checking" (click)="nextPage()" icon="pi pi-angle-right" iconPos="right"
+                        class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
+                        [disabled]="!actForm.valid">
+                    </button>
+                    <button pButton pRipple label="Next" *ngIf="checking" icon="pi pi-spin pi-spinner" iconPos="right"
+                        class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
+                        [disabled]="true">
+                    </button>
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+</form>
