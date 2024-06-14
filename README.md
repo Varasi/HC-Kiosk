@@ -13,7 +13,7 @@
   <p align="center">
     Documentation for Health Connector's Wayfinding Kiosk interface and backend can be found in the repository's <a href="https://github.com/HIRTA-HC/HC-Kiosk/wiki"><strong>Wiki Page »</strong></a>.
     <br />
-    <a href="https://github.com/HIRTA-HC/hirta-kiosk"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/HIRTA-HC/HC-Kiosk"><strong>Explore the docs »</strong></a>
     <br />
   </p>
 </div>
