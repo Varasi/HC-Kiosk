@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
-import { environment } from 'src/environments/environment';
-import { ITripDetails, ITripRequestData, ITripResponse, ITripInfo, ITripResponseDetails } from 'src/app/shared/models';
+import { environment } from '../../../environments/environment';
+import { ITripDetails, ITripRequestData, ITripResponse, ITripInfo, ITripResponseDetails } from '../../../app/shared/models';
 
-@Injectable()
+@Injectable({
+    providedIn : "root"
+})
 export class TicketService {
-    ticketInformation: ITripInfo = {
+    public ticketInformation: ITripInfo = {
         accountOption: {
             existing: true
         },
@@ -15,7 +17,8 @@ export class TicketService {
             firstname: '',
             lastname: '',
             email: '',
-            phone: ''
+            phone: '',
+            estimatedTime:''//**changed for estimated time in Pickup Component
         },
         destination: {
             lat: 0,
@@ -31,8 +34,8 @@ export class TicketService {
         ]
     };
 
-    tripResponse: ITripResponseDetails;
-    tripDetails: ITripDetails;
+    public tripResponse = <ITripResponseDetails>{};
+    public tripDetails =  <ITripDetails>{};
 
     protected hirta_via_account_name = environment.hirta_via_account_name;
     protected kioskLat = environment.kiosk_lat;
@@ -59,7 +62,7 @@ export class TicketService {
         let totalPassengers = 1;
         this.ticketInformation.passengers.forEach(passenger => {
             if (passenger.total > 0) {
-                additionalPassengers[passenger.type] = passenger.total;
+                //additionalPassengers[passenger.type] = passenger.total;
                 totalPassengers += passenger.total;
             }
         });
@@ -91,15 +94,23 @@ export class TicketService {
         return payload;
     }
 
+    getTripResponse(){
+        return this.tripResponse;
+    }
+
     destinationComplete(tripResponse: ITripResponseDetails) {
         this.tripResponse = tripResponse;
         this.ticketInformation.personalInformation['estimatedTime'] = this.estimateTime(tripResponse.pickup_eta);
         this.bookingComplete.next(this.ticketInformation.personalInformation);
+        this.bookingComplete.next(this.tripResponse)
     }
 
     destinationError(error: string) {
-        this.tripResponse = null;
+        this.tripResponse = <ITripResponseDetails>{};
+        
         this.bookingError.next(error);
+        //*Changed
+        // alert(error);
     }
 
     checkComplete(tripDetails: ITripDetails) {
@@ -109,7 +120,7 @@ export class TicketService {
     }
 
     checkError(error: string) {
-        this.tripDetails = null;
+        this.tripDetails = <ITripDetails>{};
         this.tripCheckError.next(error);
     }
 
@@ -122,7 +133,8 @@ export class TicketService {
                 firstname: '',
                 lastname: '',
                 email: '',
-                phone: ''
+                phone: '',
+                estimatedTime:''
             },
             destination: {
                 lat: 0,
@@ -144,7 +156,6 @@ export class TicketService {
         
         var now = Math.floor(d.getTime() / 1000); 
         // getTime() returns milliseconds, and we need seconds, hence the Math.floor and division by 1000
-
         var seconds = eta - now;
         let days = Math.floor(seconds / (24 * 3600));
 

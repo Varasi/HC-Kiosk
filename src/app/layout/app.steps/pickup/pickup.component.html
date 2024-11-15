@@ -24,13 +24,13 @@
                 <div class="field col-6" *ngIf="vehicleInfo || driverInfo">
                     <div class="relative bg-primary-100 border-round p-2">
                         <div class="static bg-green-100 border-round pt- h-12rem">
-                            <p class="text-left pl-5 text-5xl text-gray-900">
+                            <p class="text-left pl-5 text-4xl text-gray-900">
                                 <span *ngIf="vehicleInfo">HIRTA On Demand vehicle</span><br>
                                 <span *ngIf="vehicleInfo" class="font-semibold">{{vehicleInfo.color}}
                                     {{vehicleInfo.make}} {{vehicleInfo.model}}</span><br>
                                 <span class="font-semibold">Licence plate:
                                     {{vehicleInfo.license_plate}}</span>
-                                <span *ngIf="driverInfo" class="font-semibold">&nbsp;Driver:
+                                <span *ngIf="driverInfo" class="font-semibold"><br>Driver:
                                     {{driverInfo.first_name}} {{driverInfo.last_name}}</span>
                             </p>
                         </div>

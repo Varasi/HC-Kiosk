@@ -1,15 +1,24 @@
 <form role="form" #abtForm="ngForm" novalidate>
     <div class="steps-content">
         <p-card>
-            <ng-template *ngIf="loginOption" pTemplate="title">
+            <!-- Commenting out loginOption condition as it's related to authentication -->
+            <!-- <ng-template *ngIf="loginOption" pTemplate="title"> 
                 <span class="text-5xl">
                     Login with personal information
                 </span>
-            </ng-template>
+            </ng-template> -->
 
-            <ng-template *ngIf="!loginOption" pTemplate="title">
+            <!-- Commenting out guest option as loginOption is now bypassed -->
+            <!-- <ng-template *ngIf="!loginOption" pTemplate="title"> 
                 <span class="text-5xl">
                     Book as a guest
+                </span>
+            </ng-template> -->
+
+            <!-- Always show the following title, assuming no login/guest distinction -->
+            <ng-template pTemplate="title">
+                <span class="text-5xl">
+                    Book your trip
                 </span>
             </ng-template>
 
@@ -22,6 +31,7 @@
             <ng-template pTemplate="content">
                 <div class="p-fluid">
                     <div class="grid">
+                        <!-- First Name input -->
                         <div class="col-6">
                             <div class="field grid">
                                 <label htmlFor="firstname"
@@ -44,6 +54,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Email input -->
                         <div class="col-6">
                             <div class="field grid">
                                 <label htmlFor="email"
@@ -63,13 +75,15 @@
                                 <div class="col-offset-2 md:col-8 p-0 pl-1">
                                     <span class="p-error" *ngIf="!ticketService.ticketInformation.personalInformation.email">
                                         Email is required
-                                    </span> <span class="p-error" 
-                                        *ngIf="ticketService.ticketInformation.personalInformation.email && email.invalid">
+                                    </span> 
+                                    <span class="p-error" *ngIf="ticketService.ticketInformation.personalInformation.email && email.invalid">
                                         Email is invalid
                                     </span>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Last Name input -->
                         <div class="col-6">
                             <div class="field grid">
                                 <label htmlFor="lastname"
@@ -92,6 +106,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Phone input -->
                         <div class="col-6">
                             <div class="field grid">
                                 <label for="phone"
@@ -110,8 +126,8 @@
                                     <span class="p-error"
                                         [ngStyle]="{visibility: !ticketService.ticketInformation.personalInformation.phone ? 'visible' : 'hidden'}">
                                         Phone is required
-                                    </span> <span class="p-error" 
-                                        *ngIf="ticketService.ticketInformation.personalInformation.phone && phone.invalid">
+                                    </span> 
+                                    <span class="p-error" *ngIf="ticketService.ticketInformation.personalInformation.phone && phone.invalid">
                                         Phone number is invalid (please enter 10 digits)
                                     </span>
                                 </div>

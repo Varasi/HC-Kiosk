@@ -1,44 +1,57 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
-import { Subscription } from 'rxjs';
-import { MenuItem, MessageService } from 'primeng/api';
-
-import { AppLayoutService, TicketService } from '../core/services';
 import { Router } from '@angular/router';
+import { MenuItem, MessageService } from 'primeng/api';
+import { CardModule } from 'primeng/card';
+import { StepsModule } from 'primeng/steps';
+import { ToastModule } from 'primeng/toast';
+import { TicketService } from '../core/services/app.ticketservice.service';
+import { Subscription } from 'rxjs';
+import { AppLayoutService } from '../core/services/app.layout.service';
+import { AppTopbarComponent } from './app.topbar/app.topbar.component';
+import { ButtonModule } from 'primeng/button';
+import { ToastService } from '../core/services/toast.service';
+import { ToastComponent } from '../toast.component';
 
 @Component({
-    selector: 'app-layout',
-    templateUrl: './app.layout.component.html',
-    styleUrls: ['./app.layout.component.scss']
+  selector: 'app-layout',
+  standalone: true, 
+  imports: [ToastComponent,ToastModule,CardModule,StepsModule,CommonModule,AppTopbarComponent,ButtonModule],
+  providers:[ToastService,MessageService,TicketService],
+  templateUrl: './app.layout.component.html',
+  styleUrls: ['./app.layout.component.scss']
 })
-export class AppLayoutComponent implements OnInit, OnDestroy {
-    itemsTripBooking: MenuItem[];
-    itemsTripCheck: MenuItem[];
+export class AppLayoutComponent implements OnInit, OnDestroy{
 
-    bookingCompleteSubscription: Subscription;
-    bookingErrorSubscription: Subscription;
-    checkTripCompleteSubscription: Subscription;
-    checkTripErrorSubscription: Subscription;
+    itemsTripBooking: MenuItem[] = [];
+    itemsTripCheck: MenuItem[] = [];
+
+    bookingCompleteSubscription = <Subscription>{};
+    bookingErrorSubscription = <Subscription>{};
+    checkTripCompleteSubscription = <Subscription>{};
+    checkTripErrorSubscription = <Subscription>{};
 
     constructor(
         public messageService: MessageService,
         public ticketService: TicketService,
         public layoutService: AppLayoutService,
+        public toastService:ToastService,
         private router: Router) { }
 
-    get containerClass() {
-        return {
-            'layout-theme-light': this.layoutService.config.colorScheme === 'light',
-            'layout-theme-dark': this.layoutService.config.colorScheme === 'dark',
-            'layout-overlay': this.layoutService.config.menuMode === 'overlay',
-            'layout-static': this.layoutService.config.menuMode === 'static',
-            'layout-static-inactive': this.layoutService.state.staticMenuDesktopInactive && this.layoutService.config.menuMode === 'static',
-            'layout-overlay-active': this.layoutService.state.overlayMenuActive,
-            'layout-mobile-active': this.layoutService.state.staticMenuMobileActive,
-            'p-input-filled': this.layoutService.config.inputStyle === 'filled',
-            'p-ripple-disabled': !this.layoutService.config.ripple
+        get containerClass() {
+            return {
+                'layout-theme-light': this.layoutService.config.colorScheme === 'light',
+                'layout-theme-dark': this.layoutService.config.colorScheme === 'dark',
+                'layout-overlay': this.layoutService.config.menuMode === 'overlay',
+                'layout-static': this.layoutService.config.menuMode === 'static',
+                'layout-static-inactive': this.layoutService.state.staticMenuDesktopInactive && this.layoutService.config.menuMode === 'static',
+                'layout-overlay-active': this.layoutService.state.overlayMenuActive,
+                'layout-mobile-active': this.layoutService.state.staticMenuMobileActive,
+                'p-input-filled': this.layoutService.config.inputStyle === 'filled',
+                'p-ripple-disabled': !this.layoutService.config.ripple
+            }
         }
-    }
+
 
     ngOnInit() {
         this.itemsTripBooking = [
@@ -63,12 +76,13 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
                         window.speechSynthesis.speak(new SpeechSynthesisUtterance('Trip booked. Estimated time of pickup: ' + personalInformation['estimatedTime']));
                     }
                 }
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Order submitted',
-                    detail: 'Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your order is completed.',
-                    life: 10000
-                });
+                // this.messageService.add({
+                //     severity: 'success',
+                //     summary: 'Order submitted',
+                //     detail: 'Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your order is completed.',
+                //     life: 10000
+                // });
+                this.toastService.showToast('Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your order is completed.', 'success');
             });
 
         this.bookingErrorSubscription = this.ticketService.bookingError$.subscribe(
@@ -76,12 +90,13 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
                 if (this.layoutService.audio)
                     window.speechSynthesis.speak(new SpeechSynthesisUtterance('Failed to book the trip: ' + errorInfo));
 
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Failed to book the trip',
-                    detail: errorInfo,
-                    life: 10000
-                });
+                // this.messageService.add({
+                //     severity: 'error',
+                //     summary: 'Failed to book the trip',
+                //     detail: errorInfo,
+                //     life: 10000
+                // });
+                this.toastService.showToast('Failed to book the trip.', 'error');
             });
 
         this.checkTripCompleteSubscription = this.ticketService.tripCheckComplete$.subscribe(
@@ -94,12 +109,13 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
                         window.speechSynthesis.speak(new SpeechSynthesisUtterance('Trip successfully checked. Estimated time of pickup: ' + personalInformation['estimatedTime']));
                 }
 
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Trip checked',
-                    detail: 'Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your trip is checked.',
-                    life: 10000
-                });
+                // this.messageService.add({
+                //     severity: 'success',
+                //     summary: 'Trip checked',
+                //     detail: 'Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your trip is checked.',
+                //     life: 10000
+                // });
+                this.toastService.showToast('Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your trip is checked.', 'success');
             });
 
         this.checkTripErrorSubscription = this.ticketService.tripCheckError$.subscribe(
@@ -107,12 +123,13 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
                 if (this.layoutService.audio)
                     window.speechSynthesis.speak(new SpeechSynthesisUtterance('Check trip error: ' + errorInfo));
 
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Check Trip Error',
-                    detail: errorInfo,
-                    life: 10000
-                });
+                // this.messageService.add({
+                //     severity: 'error',
+                //     summary: 'Check Trip Error',
+                //     detail: errorInfo,
+                //     life: 10000
+                // });
+                this.toastService.showToast(errorInfo, 'error');
             });
     }
 

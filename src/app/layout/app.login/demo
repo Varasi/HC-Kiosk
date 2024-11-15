@@ -1,0 +1,65 @@
+<div class="h-screen flex flex-column justify-content-center align-items-center bg-cover"
+    style="background-color: #f6f4e5 !important; background: url('assets/images/login.png'); background-size: cover;">
+    <!-- <p-toast></p-toast> -->
+    <!-- <app-toast></app-toast> -->
+
+
+    <div class="card mt-5 shadow-4 border-round-md" style="width: 30%; background-color: rgba(157, 165, 172, 0.85);">
+        <div class="text-center py-5 px-4">
+            <h2 class="text-4xl font-bold mb-5" style="color: #2d2d2d;">Login</h2>
+            <form #loginForm="ngForm" novalidate>
+                <div class="mx-3 flex flex-column gap-4">
+                    <!-- Username Input -->
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-user text-2xl"></i>
+                        </span>
+                        <input type="text"
+                            id="username"
+                            pInputText
+                            class="p-inputtext text-3xl w-full"
+                            ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                            #usernameKeyboard="ngxTouchKeyboard"
+                            (focus)="usernameKeyboard.openPanel()"
+                            (blur)="usernameKeyboard.closePanel()"
+                            [(ngModel)]="username"
+                            name="username"
+                            placeholder="Username"
+                            required />
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock text-2xl"></i>
+                        </span>
+                        <input type="password"
+                            id="password"
+                            pInputText
+                            class="p-inputtext text-3xl w-full"
+                            ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                            #passwordKeyboard="ngxTouchKeyboard"
+                            (focus)="passwordKeyboard.openPanel()"
+                            (blur)="passwordKeyboard.closePanel()"
+                            [(ngModel)]="password"
+                            name="password"
+                            placeholder="Password"
+                            required />
+                    </div>
+
+                    <!-- Login Button -->
+                    <button pButton pRipple icon="pi pi-sign-in"
+                        class="p-button-lg p-button-raised w-full text-2xl font-semibold mt-4"
+                        (click)="login()"
+                        [disabled]="!loginForm.valid"
+                        label="LOGIN">
+                        LOGIN
+                    </button>
+
+                    <!-- App Version Display -->
+                    <div class="text-xl mt-5">{{appVersion}}</div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

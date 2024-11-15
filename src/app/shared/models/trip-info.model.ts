@@ -2,7 +2,7 @@ import { IPassenger } from './passengers.model';
 
 export interface ITripInfo {
     accountOption: IAccountOption;
-    personalInformation: IPersonalInfo;
+    personalInformation: IPersonalInfoWithTime;
     destination: IDestination;
     passengers: IPassenger[];
 }

@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, NgZone } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { LocalStorageItems } from 'src/app/shared/models';
+import { LocalStorageItems } from '../../../app/shared/models';
 
 export type MenuMode = 'static' | 'overlay' | 'horizontal' | 'slim' | 'slim-plus' | 'reveal' | 'drawer';
 export type ColorScheme = 'light' | 'dark';
@@ -90,6 +90,7 @@ export class AppLayoutService {
     }
 
     changeTheme(colorScheme: ColorScheme) {
+       
         const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
         const themeLinkHref = themeLink.getAttribute('href');
         const currentColorScheme = 'theme-' + this.config.colorScheme;
@@ -104,6 +105,7 @@ export class AppLayoutService {
                 this.config.menuTheme = 'dark';
                 this._updateScheme('dark');
             } else {
+                console.log('In light 110');
                 this._updateScheme('light');
             }
 
@@ -162,6 +164,7 @@ export class AppLayoutService {
     }
 
     private _updateScheme(scheme: 'light' | 'dark'): void {
+        console.log('169 : '+scheme);
         this._document.body.classList.remove('light', 'dark');
         this._document.body.classList.add(scheme);
     }

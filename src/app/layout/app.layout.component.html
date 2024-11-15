@@ -1,9 +1,11 @@
-<div class="layout-wrapper" [ngClass]="containerClass">
+<div class="layout-wrapper " [ngClass]="containerClass">
+    
     <app-topbar></app-topbar>
     <div class="layout-sidebar"></div>
     <div class="layout-main-container c-layout-content">
         <div class="layout-main">
-            <p-toast></p-toast>
+            <!-- <p-toast></p-toast> -->
+            <app-toast></app-toast>
             <section class="mt-5" *ngIf="!ticketService.initialCheck">
                 <div class="text-center text-7xl font-semibold">Welcome to HIRTA Health Connector</div>
                 <div class="text-center text-5xl mt-3 font-semibold">I need to:</div>

@@ -83,6 +83,7 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { ConfirmationService, MessageService, PrimeNGConfig, PrimeIcons } from 'primeng/api';
 
 import { CapitalizePipe, TrimPipe, DayTimePipe } from './pipes';
+import { Router } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -115,6 +116,7 @@ import { CapitalizePipe, TrimPipe, DayTimePipe } from './pipes';
     DynamicDialogModule,
     FieldsetModule,
     FileUploadModule,
+    FormsModule,
     GalleriaModule,
     ImageModule,
     InplaceModule,
@@ -165,7 +167,8 @@ import { CapitalizePipe, TrimPipe, DayTimePipe } from './pipes';
     TooltipModule,
     TreeModule,
     TreeTableModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    Router
   ],
   exports: [
     CommonModule,

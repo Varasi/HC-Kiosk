@@ -13,6 +13,8 @@ export interface ITripResponseDetails {
   pickup_eta: number;
   dropoff: IResponseAddress;
   dropoff_eta: number;
+  vehicle_info: IVehicleInfo;//**changed for pickup component vehicle and driver details
+  driver_info: IDriverInfo;//**changed for pickup component vehicle and driver details
 }
 
 export interface ITripResponse {
