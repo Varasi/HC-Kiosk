@@ -12,8 +12,8 @@ export class AppDataService {
   
   protected apiAuthUrl = environment.api_auth_url;
   protected apiUrl = environment.api_url;
-  protected client_id = environment.client_id;
-  protected client_secret = environment.client_secret;
+  protected client_id = environment.CLIENT_ID;
+
 
   constructor(protected http: HttpClient,public authservice:AppAuthService) { 
     // const authservice=AppAuthService;
