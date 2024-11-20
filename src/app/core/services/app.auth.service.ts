@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { AppHttpOptions } from '../config';
 import { IAuthData } from '../../shared/models/auth-data.model';
 import { LocalStorageItems } from '../../shared/models/local-storage-items.model';
+import {RuntimeConfigService} from './runtime-config.service';
 // import { ToastService } from 'primeng/toast';
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +25,7 @@ export class AppAuthService {
     // constructor(public authService: AppAuthService) {}
     constructor(
         private router: Router,
+        private runtimeConfigService:RuntimeConfigService,
         public http: HttpClient) {
         //
         this.restoreAuth();
@@ -60,10 +62,20 @@ export class AppAuthService {
             signOut();
             const { nextStep } = await signIn({ username, password });
             const session = await fetchAuthSession();
-
+            console.log(session);
             if (session.tokens) {
                 const idToken1 = session.tokens.idToken; // ID token
+                const accessKey=session.credentials?.accessKeyId;
+                const secretKey=session.credentials?.secretAccessKey;
 
+                console.log(accessKey);
+                console.log(secretKey);
+                this.runtimeConfigService.set('accessKey',accessKey);
+                this.runtimeConfigService.set('secretKey',secretKey);
+
+                console.log('--------');
+                console.log(this.runtimeConfigService.get('accessKey'));
+                console.log(this.runtimeConfigService.get('secretKey'));
                 const accessToken = session.tokens.accessToken;
                 let username, client_id;
                 if (accessToken.payload) {

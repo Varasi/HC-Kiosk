@@ -18,7 +18,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { SharedModule } from '../shared/shared.module';
 import { TicketService } from '../core/services';
 import { NgxTouchKeyboardModule } from '../directive/ngx-touch-keyboard/ngx-touch-keyboard.module';
-import { AppTopBarComponent } from './app.topbar/app.topbar.component';
+import { AppTopbarComponent } from './app.topbar/app.topbar.component';
 import { AppLayoutComponent } from "./app.layout.component";
 import { AccountBookTripComponent } from './app.steps/account-book-trip/account-book-trip.component';
 import { DestinationComponent } from './app.steps/destination/destination.component';
@@ -28,7 +28,7 @@ import { AppLoginComponent } from './app.login/app.login.component';
 
 @NgModule({
     declarations: [
-        AppTopBarComponent,
+        AppTopbarComponent,
         AppLayoutComponent,
         AccountBookTripComponent,
         DestinationComponent,

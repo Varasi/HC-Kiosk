@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { LocalStorageItems } from 'src/app/shared/models/local-storage-items.model';
+import { LocalStorageItems } from '../../shared/models/local-storage-items.model';
 
 @Injectable({
     providedIn: 'root'
