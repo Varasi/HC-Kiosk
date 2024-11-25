@@ -1,51 +1,111 @@
-/* Base styling for the toast container */
+/* Toast container (acts as the main container for all toasts) */
 .toast {
-    padding: 15px;
-    border-radius: 5px;
-    margin: 10px;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    display: inline-block;
-    width: 300px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: opacity 0.3s ease-in-out;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between toasts */
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
+/* Base styling for individual toasts */
+.toast-item {
+  padding: 15px;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 300px;
+  max-width: 400px;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  pointer-events: auto; /* Allow interaction with the toast itself */
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* Toast animation for enter and leave effects */
+.toast-item.toast-enter {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.toast-item.toast-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease-in-out;
+}
+.toast-item.toast-leave {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast-item.toast-leave-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Close button for the toast */
+.toast-item .close-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+}
+
+/* Icon styling */
+.toast-item .icon {
+  font-size: 18px;
+}
+
+/* Success toast style */
+.toast-item.success {
+  background-color: #4caf50; /* Green */
+  color: white;
+  border-left: 4px solid #388e3c;
+}
+
+/* Error toast style */
+.toast-item.error {
+  background-color: #f44336; /* Red */
+  color: white;
+  border-left: 4px solid #d32f2f;
+}
+
+/* Info toast style */
+.toast-item.info {
+  background-color: #2196f3; /* Blue */
+  color: white;
+  border-left: 4px solid #1976d2;
+}
+
+/* Warning toast style */
+.toast-item.warn {
+  background-color: #ff9800; /* Orange */
+  color: white;
+  border-left: 4px solid #f57c00;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .toast {
+    top: 10px;
+    right: 10px;
   }
-  
-  /* Success toast style */
-  .toast.success {
-    background-color: #4caf50;  /* Green */
-    color: white;
-    border: 1px solid #388e3c;
+  .toast-item {
+    min-width: 250px;
+    max-width: 300px;
+    font-size: 12px;
   }
-  
-  /* Error toast style */
-  .toast.error {
-    background-color: #f44336;  /* Red */
-    color: white;
-    border: 1px solid #d32f2f;
-  }
-  
-  /* Info toast style */
-  .toast.info {
-    background-color: #2196f3;  /* Blue */
-    color: white;
-    border: 1px solid #1976d2;
-  }
-  
-  /* Warning toast style */
-  .toast.warn {
-    background-color: #ff9800;  /* Orange */
-    color: white;
-    border: 1px solid #f57c00;
-  }
-  
-  /* Toast message animation for fade-in effect */
-  .toast-enter, .toast-leave-to {
-    opacity: 0;
-  }
-  
-  .toast-enter-active, .toast-leave-active {
-    opacity: 1;
-  }
-  
+}
+
+/* Positioning for multiple toasts (stacking behavior) */
+.toast-item + .toast-item {
+  margin-top: 10px;
+}

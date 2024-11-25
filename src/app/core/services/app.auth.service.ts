@@ -2,13 +2,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { fetchAuthSession, signIn, signOut } from 'aws-amplify/auth'
-import { Observable, of, BehaviorSubject, firstValueFrom } from 'rxjs';
-import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AppHttpOptions } from '../config';
 import { IAuthData } from '../../shared/models/auth-data.model';
-import { LocalStorageItems } from '../../shared/models/local-storage-items.model';
 import {RuntimeConfigService} from './runtime-config.service';
+import { defaultStorage } from 'aws-amplify/utils';
+import { LocalStorageItems } from '../../shared/models';
+
+
 // import { ToastService } from 'primeng/toast';
 
 @Injectable({ providedIn: 'root' })
@@ -40,15 +42,15 @@ export class AppAuthService {
         //changed **
         const session = await fetchAuthSession();
         let response;
-        if (session.tokens) {
-            const idToken = session.tokens.idToken; // ID token
-            const accessToken = session.tokens.accessToken;
-
+        if (session.tokens) {          
+            const clientId = session.tokens?.accessToken.payload['client_id']; 
+            const storage= defaultStorage.storage;
+            const username=storage?.getItem(`CognitoIdentityServiceProvider.${clientId}.LastAuthUser`)          
+            const idToken=defaultStorage.storage?.getItem(`CognitoIdentityServiceProvider.${clientId}.${username}.idToken`);
+            console.log(idToken);
             response = {
                 token_type: 'Bearer',
-                id_token: idToken,
-                access_token: accessToken,
-
+                id_token: idToken
             };
 
         }
@@ -61,35 +63,19 @@ export class AppAuthService {
         try {
             signOut();
             const { nextStep } = await signIn({ username, password });
-            const session = await fetchAuthSession();
+            const session =await fetchAuthSession();
             console.log(session);
             if (session.tokens) {
-                const idToken1 = session.tokens.idToken; // ID token
-                const accessKey=session.credentials?.accessKeyId;
-                const secretKey=session.credentials?.secretAccessKey;
-
-                console.log(accessKey);
-                console.log(secretKey);
-                this.runtimeConfigService.set('accessKey',accessKey);
-                this.runtimeConfigService.set('secretKey',secretKey);
-
-                console.log('--------');
-                console.log(this.runtimeConfigService.get('accessKey'));
-                console.log(this.runtimeConfigService.get('secretKey'));
-                const accessToken = session.tokens.accessToken;
-                let username, client_id;
-                if (accessToken.payload) {
-                    username = accessToken.payload['username'];
-                    client_id = accessToken.payload['client_id'];
-                }
-
+              
+                const accessToken = session.tokens.accessToken;               
+                const idToken=this.getToken();
                 // Decode token for user group info
                 const groups = accessToken.payload["cognito:groups"];
                 // const groups=["KioskUser"];
                 if (groups && Array.isArray(groups) && groups.includes("KioskUser")) {
                     // Return token and displayName if user is authenticated and belongs to KioskUser group
                     return {
-                        token: accessToken,
+                        token: idToken,
                         displayName: 'kiosk'
                     };
                 } else {

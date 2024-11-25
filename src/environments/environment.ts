@@ -21,13 +21,15 @@ export const environment = {
     northeastLng: -91.7188823451054,
 
 
-      REGION : 'ap-south-1',
-      POOL_ID: 'ap-south-1_gNzEsBZpV',
-      CLIENT_ID: '2e7odi4eesjhlkrbkv3iu56kim',
-      IDENTITY_POOL_ID : 'ap-south-1:32dfc4b7-32cb-4ec5-a3f5-508c3abf3bc1',
+      REGION : '<REGION>',
+      POOL_ID: '<POOL_ID>',
+      CLIENT_ID: '<CLIENT_ID>',
+      IDENTITY_POOL_ID : '<IDENTITY_POOL_ID>',
       PASSWORD_REGEX : /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
     
     //api_url: 'https://api.hirtahealthconnector.org/'
     api_auth_url : 'https://health-connector.auth.ap-southeast-2.amazoncognito.com/',
-    api_url: 'https://0wi0kpj1ee.execute-api.ap-south-1.amazonaws.com/prod/'
+    api_url: 'https://0wi0kpj1ee.execute-api.ap-south-1.amazonaws.com/prod/',
+    
+
 };

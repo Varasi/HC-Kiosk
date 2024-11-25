@@ -91,7 +91,7 @@ export class DestinationComponent {
       
       this.dataService.getAuthToken().subscribe({
         next: async (token: any) => {
-            token=token.access_token;
+            token=token.id_token;
           this.dataService.bookKioskTrip(payload, token).subscribe({
             next: (trip_data: any) => {
               if (Array.isArray(trip_data)) {
@@ -112,7 +112,7 @@ export class DestinationComponent {
               } else {
                
                 const trip_id = trip_data.trip_id;
-                this.dataService.bookKioskTripDetails(trip_id, token.access_token).subscribe({
+                this.dataService.bookKioskTripDetails(trip_id, token.id_token).subscribe({
                   next: (trip_data_details: any) => {
                     if (Array.isArray(trip_data_details)) {
                       let errorInfo = JSON.parse(trip_data_details[0].replace('MOD/ATMS Error:', ''));
