@@ -49,6 +49,7 @@ export class AppLoginComponent implements OnInit {
             .then((data) => {
                 if(data.token){
                 this.authService.setIsLogin(true);
+                this.authService.setIsAuthenticated(true);
                 this.authService.addAuthenticationData(data);
 
                 const hr = (new Date()).getHours(); // get hours of the day in 24Hr format (0-23)
