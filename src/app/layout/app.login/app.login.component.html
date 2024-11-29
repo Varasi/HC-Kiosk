@@ -7,22 +7,44 @@
             style="background-color: #9da5acad !important; flex-wrap: wrap;">
             <form #loginForm="ngForm" novalidate>
                 <div class="mx-7 flex flex-column gap-3 px-1 pt-7 pb-5">
-                    <div class="p-inputgroup mt-3 mb-7">
-                        <span class="p-inputgroup-addon"><i class="pi pi-key text-5xl"></i></span>
-                        <span class="p-float-label">
-                            <input type="password"
-                                id="password" 
-                                pInputText 
-                                class="text-5xl"
-                                ngxTouchKeyboard ngxTouchKeyboardFullScreen
-                                #firstnameKeyboard="ngxTouchKeyboard" 
-                                (focus)="firstnameKeyboard.openPanel()"
-                                (blur)="firstnameKeyboard.closePanel()"
-                                [(ngModel)]="password" 
-                                name="password" 
-                                type="password" required/>
+                     <!-- Username Field -->
+                     <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-user text-5xl"></i>
                         </span>
+                        <input type="text"
+                            id="username" 
+                            pInputText 
+                            class="text-4xl w-full"
+                            ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                            #usernameKeyboard="ngxTouchKeyboard" 
+                            (focus)="usernameKeyboard.openPanel()"
+                            (blur)="usernameKeyboard.closePanel()"
+                            [(ngModel)]="username" 
+                            name="username" 
+                            placeholder="Username"
+                            required />
                     </div>
+
+                    <!-- Password Field -->
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-key text-5xl"></i>
+                        </span>
+                        <input type="password"
+                            id="password" 
+                            pInputText 
+                            class="text-4xl w-full"
+                            ngxTouchKeyboard ngxTouchKeyboardFullScreen            
+                            #passwordKeyboard="ngxTouchKeyboard"
+                            (focus)="passwordKeyboard.openPanel()"
+                            (blur)="passwordKeyboard.closePanel()"
+                            [(ngModel)]="password" 
+                            name="password" 
+                            placeholder="Password"
+                            required />
+                    </div>
+
                     <button pButton pRipple icon="pi pi-sign-in" 
                         class="px-1 p-button-lg p-button-raised h-5rem text-4xl font-semibold" (click)="login()"
                         [disabled]="!loginForm.valid" label="LOGIN">

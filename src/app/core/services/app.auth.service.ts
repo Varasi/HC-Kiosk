@@ -8,6 +8,8 @@ import { environment } from 'src/environments/environment';
 import { AppHttpOptions } from '../config';
 import { IAuthData } from 'src/app/shared/models/auth-data.model';
 import { LocalStorageItems } from 'src/app/shared/models/local-storage-items.model';
+import { fetchAuthSession, signIn } from 'aws-amplify/auth';
+import { defaultStorage } from 'aws-amplify/utils';
 
 @Injectable()
 export class AppAuthService {
@@ -24,26 +26,51 @@ export class AppAuthService {
         private router: Router,
         public http: HttpClient) {
         //
-        this.restoreAuth();
+        // this.restoreAuth();
     }
 
     public getOptions() {
         return this.options;
     }
 
-    private getToken(username: string, password: string): Observable<any> {
+    private  async getToken() {
         // return this.http.post(`${this.apiUrl}auth/login`, { username, password });
 
         // temporary solution
-        return of({
-            token: 'zxsfsdfg56546grs546gsd54654tygetgsettd',
-            displayName: 'kiosk'
-        });
+        const session = await fetchAuthSession();
+        let response;
+        if (session.tokens) {          
+            const clientId = session.tokens?.accessToken.payload['client_id']; 
+            const storage= defaultStorage.storage;
+            const username=storage?.getItem(`CognitoIdentityServiceProvider.${clientId}.LastAuthUser`)          
+            const idToken=defaultStorage.storage?.getItem(`CognitoIdentityServiceProvider.${clientId}.${username}.idToken`);
+            // console.log(idToken);
+            response = {
+                token: idToken,
+                displayName: 'kiosk'
+            };
+
+        }
+        // return of({
+        //     token: 'zxsfsdfg56546grs546gsd54654tygetgsettd',
+        //     displayName: 'kiosk'
+        // });
+        return response;
         // temporary solution
     }
 
     public async tryToLoginAsync(username: string, password: string): Promise<any> {
-        return await firstValueFrom(this.getToken(username, password));
+        
+        try{
+             const {nextStep}=await signIn({username,password});
+             const sesssion=await fetchAuthSession();
+             return this.getToken();
+        }
+        catch (error)
+        {
+            return error
+        }
+          
     }
 
     logout() {

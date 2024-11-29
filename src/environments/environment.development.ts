@@ -19,9 +19,14 @@ export const environment = {
     southwestLng: -95.51470502550431,
     northeastLat: 42.94950757503583, 
     northeastLng: -91.7188823451054,
+    REGION : 'ap-south-1',
+    POOL_ID:'ap-south-1_gNzEsBZpV',
+    CLIENT_ID: '2e7odi4eesjhlkrbkv3iu56kim',
+    IDENTITY_POOL_ID : 'ap-south-1:32dfc4b7-32cb-4ec5-a3f5-508c3abf3bc1',
+    PASSWORD_REGEX : /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
 
-    client_id: 'XXXXXXXXXXXXXXXXXXXXx',
-    client_secret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+    // client_id: 'XXXXXXXXXXXXXXXXXXXXx',
+    // client_secret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
 
     api_url: 'https://api.hirtahealthconnector.org/'
 };
