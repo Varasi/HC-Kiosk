@@ -24,10 +24,10 @@ export const environment = {
     CLIENT_ID: '2e7odi4eesjhlkrbkv3iu56kim',
     IDENTITY_POOL_ID : 'ap-south-1:32dfc4b7-32cb-4ec5-a3f5-508c3abf3bc1',
     PASSWORD_REGEX : /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-
+GOOGLE_MAPS_KEY:'AIzaSyANCIsb2avj0G07Cdvb3LMcAsgK1coFE54',
 
     // client_id: 'XXXXXXXXXXXXXXXXXXXXXXXXx',
     // client_secret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
 
-    api_url: 'https://api.hirtahealthconnector.org/'
+        api_url: 'https://0wi0kpj1ee.execute-api.ap-south-1.amazonaws.com/prod/'
 };

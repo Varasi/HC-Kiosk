@@ -26,14 +26,14 @@ export class AppAuthService {
         private router: Router,
         public http: HttpClient) {
         //
-        // this.restoreAuth();
+        this.restoreAuth();
     }
 
     public getOptions() {
         return this.options;
     }
 
-    private  async getToken() {
+    public  async getToken() {
         // return this.http.post(`${this.apiUrl}auth/login`, { username, password });
 
         // temporary solution
@@ -68,7 +68,7 @@ export class AppAuthService {
         }
         catch (error)
         {
-            return error
+            return error;
         }
           
     }
