@@ -60,7 +60,7 @@ export class AppAuthService {
     }
 
     public async tryToLoginAsync(username: string, password: string): Promise<any> {
-        
+        console.log(environment);
         try{
              const {nextStep}=await signIn({username,password});
              const sesssion=await fetchAuthSession();
