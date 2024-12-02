@@ -9,8 +9,8 @@ export const environment = {
 
     trip_origin: '',
 
-    kiosk_lat: '',
-    kiosk_lng: '',
+    kiosk_lat: 0,
+    kiosk_lng: 0,
     kiosk_address: '',
 
     hirta_via_account_name: 'Health_Connector',
