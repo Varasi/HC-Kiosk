@@ -1,0 +1,20 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install 
+        - sed -i  "s/API_KEY/$GOOGLE_MAPS_KEY/" src/index.html
+        - echo "export const environment = {  version:\"${version}\",  release_date:\"${release_date}\",  trip_origin:\"${trip_origin}\",  kiosk_lat:\"${kiosk_lat}\",  kiosk_lng:\"${kiosk_lng}\",  kiosk_address:\"${KIOSK_ADDRESS}\",  REGION:\"${REGION}\",  POOL_ID:\"${POOL_ID}\",  CLIENT_ID:\"${CLIENT_ID}\",  IDENTITY_POOL_ID:\"${IDENTITY_POOL_ID}\",  GOOGLE_MAPS_KEY:\"${GOOGLE_MAPS_KEY}\",  api_url:\"${api_url}\", hirta_via_account_name:'Health_Connector',southwestLat:40.62844733741235,southwestLng:-95.51470502550431,northeastLat:42.94950757503583,northeastLng:-91.7188823451054}" > src/environments/environment.ts    
+
+        
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist/hirta-kiosk
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*

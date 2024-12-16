@@ -68,7 +68,7 @@ export class DestinationComponent implements OnInit {
 
     this.dataService.getAuthToken().subscribe({
       next: (token: any) => {
-        this.dataService.bookKioskTrip(payload, token.access_token).subscribe({
+        this.dataService.bookKioskTrip(payload, token.token).subscribe({
           next: (trip_data: any) => {
             if (Array.isArray(trip_data)) {
               let errorInfo = JSON.parse(trip_data[0].replace('MOD/ATMS Error:', ''));

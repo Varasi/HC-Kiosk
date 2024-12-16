@@ -44,9 +44,12 @@ export class AppLoginComponent implements OnInit {
 
     public login(): boolean {
         let success = false;
+        // console.log(this.username,this.password);
         this.authService.tryToLoginAsync(this.username, this.password)
-            .then((data: IAuthData) => {
+            .then((data) => {
+                if(data.token){
                 this.authService.setIsLogin(true);
+                this.authService.setIsAuthenticated(true);
                 this.authService.addAuthenticationData(data);
 
                 const hr = (new Date()).getHours(); // get hours of the day in 24Hr format (0-23)
@@ -58,6 +61,11 @@ export class AppLoginComponent implements OnInit {
                     window.speechSynthesis.speak(new SpeechSynthesisUtterance('Hello!'));
                 }
                 success = true;
+              }
+              else{
+                this.authService.setIsAuthenticated(false);
+                this.messageService.add({ severity: 'error', summary: data.message, detail: "Please try again" });
+              }
             })
             .catch((error: any) => {
                 this.authService.setIsAuthenticated(false);
