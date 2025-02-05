@@ -38,12 +38,31 @@
                 </div>
             </div>
         </ng-template>
+
+        <!-- timeout dialog box -->
+        <p-dialog 
+            [modal]="true" 
+            [(visible)]="timeoutDialogVisible" 
+            [draggable]="false"
+            [closable]="false"
+            [style]="{ 'width': '80%', 'font-size': '2.2em' }">
+                <h1>Are you still there?</h1>
+                <p>If you're still entering your info please click the button below. Otherwise, your session will end in 60 seconds.</p>
+        <div style="text-align: center;">
+            <p-button 
+                label="I'm still here" 
+                (onClick)="toggleDialog()"
+                [style]="{ 'font-size': '0.8em', 'font-weight': 'bold' }">
+            </p-button>
+        </div>
+        </p-dialog>
+
         <ng-template pTemplate="footer">
             <div class="grid grid-nogutter justify-content-between">
-                <button pButton pRipple label="Back" (click)="prevPage()" icon="pi pi-angle-left"
+                <button pButton pRipple label="Back" (click)="[prevPage(), gaService.gaPageView('destination')]" icon="pi pi-angle-left"
                     class="p-button-lg p-button-raised h-5rem text-4xl font-semibold">
                 </button>
-                <button pButton pRipple label="Done" (click)="done()" icon="pi pi-angle-right" iconPos="right"
+                <button pButton pRipple label="Done" (click)="[done(), gaService.gaPageView('HIRTA Kiosk')]" icon="pi pi-angle-right" iconPos="right"
                     class="p-button-lg p-button-raised h-5rem text-4xl font-semibold">
                 </button>
             </div>

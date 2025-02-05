@@ -34,8 +34,6 @@ export class AppInterceptorService implements HttpInterceptor {
             | any> {
         return next.handle(request).pipe(
             catchError(error => {
-                console.log(error);
-
                 let err: string | undefined = "";
                 if (error.error) {
                     if (error.error.error_description) {

@@ -5,3 +5,26 @@
     margin-bottom: 1rem;
     min-height: 475px;
 }
+
+.p-fluid p-checkbox {
+    font-size: 1.7em;
+    position: relative;
+    left: 59%;
+    width: 360px;
+}
+
+::ng-deep .p-checkbox .p-checkbox-box {
+    position: relative;
+    top: 14px;
+    width: 35px;
+    height: 35px;
+}
+
+::ng-deep .p-checkbox-label {
+    line-height: 1;
+    margin-left: 0px;
+}
+
+.hide-email {
+    color: #17212f;
+  }

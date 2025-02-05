@@ -10,6 +10,7 @@ export interface ITripRequestData {
 
 export interface IAdditionalPassengers {
   Guest?: number;
+  'Guest (WAV)'?: number; 
   PCA?: number;
   'PCA (WAV)'?: number; 
 }

@@ -11,10 +11,13 @@ import { AppInterceptorService } from './core/services';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CognitoCallbackComponent } from './cognito-callback/cognito-callback.component';
+import { GoogleAnalyticsService } from './core/services/google-analytics.service';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        CognitoCallbackComponent,
     ],
     imports: [
         BrowserModule,
@@ -25,9 +28,10 @@ import { AppComponent } from './app.component';
         CoreModule,
         SharedModule,
         AppRoutingModule,
-        AppLayoutModule
+        AppLayoutModule,
     ],
     providers: [
+        GoogleAnalyticsService,
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: AppInterceptorService, multi: true }
     ],

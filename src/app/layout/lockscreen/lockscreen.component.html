@@ -1,0 +1,39 @@
+<div class="h-screen flex flex-column bg-cover" 
+    style="background-color: #f6f4e5 !important; background: url('assets/images/login.png')">
+    <p-toast></p-toast>
+
+    <div class="mt-5 ml-5 mb-auto" style="width: 30% !important;">
+        <div class="text-center flex flex-column border-1 border-round-md surface-border surface-card"
+            style="background-color: #9da5acad !important; flex-wrap: wrap;">
+            <form #loginForm="ngForm" novalidate>
+                <div class="mx-7 flex flex-column gap-3 px-1 pt-7 pb-5">
+                    <div class="p-inputgroup mt-3 mb-7">
+                        <span class="p-inputgroup-addon"><i class="pi pi-lock text-5xl"></i></span>
+                        <span class="p-float-label">
+                            <input type="password"
+                                id="passwordInput" 
+                                pInputText 
+                                class="text-5xl"
+                                ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                                #passKeyboard="ngxTouchKeyboard" 
+                                (focus)="passKeyboard.openPanel()"
+                                (blur)="passKeyboard.closePanel()"
+                                [(ngModel)]="passwordInput" 
+                                name="passwordInput" 
+                                type="password" required/>
+                        </span>
+                    </div>
+                    <button pButton pRipple icon="pi pi-unlock" 
+                        class="px-1 p-button-lg p-button-raised h-5rem text-4xl font-semibold" (click)="login()"
+                        [disabled]="!loginForm.valid" label="UNLOCK">
+                    </button>
+                    <!-- need to be able to re-log in if token expires while screen is locked -->
+                    <button pButton pRipple icon="pi pi-sign-in" 
+                        class="px-1 p-button-lg p-button-raised h-5rem text-4xl font-semibold" (click)="cognitoLogin()"
+                        label="AWS LOGIN" [disabled]="awsLoginDisabled">
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -7,6 +7,9 @@ import { LocalStorageItems } from 'src/app/shared/models/local-storage-items.mod
 
 import { environment } from 'src/environments/environment';
 
+import {client} from '@passwordless-id/webauthn'
+import { CognitoCallbackComponent } from "src/app/cognito-callback/cognito-callback.component";
+
 @Component({
     selector: 'app-login',
     templateUrl: './app.login.component.html',
@@ -15,7 +18,7 @@ import { environment } from 'src/environments/environment';
 export class AppLoginComponent implements OnInit {
     public appVersion: string = "";
     public error = true;
-    public username = 'kiosk';
+    public username = 'dch';
     public password: string;
 
     rememberMe: boolean = false;
@@ -64,5 +67,34 @@ export class AppLoginComponent implements OnInit {
                 this.messageService.add({ severity: 'error', summary: error.message, detail: "Please try again" });
             });
         return success;
+    }
+
+    /* 
+        Redirects to cognito login page where the user enters username and pw.
+        Successful login redirects to /src/static/cognito.html, which redirects
+        to the cognito-login component page, with the JWT from AWS. The JWT is
+        stored and cognito-callback component and verfied in the auth service.
+    */
+    public cognitoLogin() {
+        this.authService.cognitoLogin();
+    }
+
+    public hwlogin() {
+        return 0;
+    }
+
+    public register() {
+        // let challenge = this.authService.getRegOptions(
+        //     'Arnaud Dagnelies'
+        //     ).subscribe(
+        //         reg_obj =>
+        //             this.authService.userReg(reg_obj)
+        //     )
+        // this.authService.sendKeys(challenge).subscribe()
+        
+        this.authService.getRegOptions('Arnaud Dagnelies'
+        ).then(
+            challenge => this.authService.userReg(challenge)
+        )
     }
 }

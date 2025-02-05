@@ -8,6 +8,8 @@ import { DestinationComponent } from './layout/app.steps/destination/destination
 import { PickupComponent } from './layout/app.steps/pickup/pickup.component';
 import { AccountCheckTripComponent } from './layout/app.steps/account-check-trip/account-check-trip.component';
 import { AppLoginComponent } from './layout/app.login/app.login.component';
+import { CognitoCallbackComponent } from './cognito-callback/cognito-callback.component';
+import { LockscreenComponent } from './layout/lockscreen/lockscreen.component';
 
 @NgModule({
     imports: [
@@ -19,10 +21,12 @@ import { AppLoginComponent } from './layout/app.login/app.login.component';
                     { path: 'account-book-trip', component: AccountBookTripComponent },
                     { path: 'destination', component: DestinationComponent },
                     { path: 'pickup', component: PickupComponent },
-                    { path: 'account-check-trip', component: AccountCheckTripComponent }
+                    { path: 'account-check-trip', component: AccountCheckTripComponent },
                 ]
             },
+            { path: 'lockscreen', component: LockscreenComponent},
             { path: 'login', component: AppLoginComponent },
+            { path: 'cognito-login', component: CognitoCallbackComponent},
             { path: '**', redirectTo: '' }
         ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
     ],

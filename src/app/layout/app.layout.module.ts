@@ -25,6 +25,7 @@ import { DestinationComponent } from './app.steps/destination/destination.compon
 import { PickupComponent } from './app.steps/pickup/pickup.component';
 import { AccountCheckTripComponent } from './app.steps/account-check-trip/account-check-trip.component';
 import { AppLoginComponent } from './app.login/app.login.component';
+import { LockscreenComponent } from './lockscreen/lockscreen.component';
 
 @NgModule({
     declarations: [
@@ -34,7 +35,8 @@ import { AppLoginComponent } from './app.login/app.login.component';
         DestinationComponent,
         PickupComponent,
         AccountCheckTripComponent,
-        AppLoginComponent
+        AppLoginComponent,
+        LockscreenComponent
     ],
     imports: [
         BrowserModule,
@@ -58,7 +60,7 @@ import { AppLoginComponent } from './app.login/app.login.component';
         TicketService
     ],
     exports: [
-        AppLayoutComponent
+        AppLayoutComponent,
     ]
 })
 export class AppLayoutModule { }

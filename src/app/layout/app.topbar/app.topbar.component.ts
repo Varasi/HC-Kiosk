@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
 
-import { AppLayoutService, TicketService } from '../../core/services';
+import { AppLayoutService, TicketService, AppAuthService } from '../../core/services';
+import { TimeoutService } from 'src/app/core/services/timeout.service';
 
 @Component({
     selector: 'app-topbar',
@@ -17,9 +18,13 @@ export class AppTopBarComponent {
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
     @ViewChild('topbarmenu') menu!: ElementRef;
 
-    constructor(public layoutService: AppLayoutService, 
+    constructor(
+        public layoutService: AppLayoutService, 
         public ticketService: TicketService,
-        private router: Router) { }
+        public authService: AppAuthService,
+        private router: Router,
+        public timeoutService: TimeoutService
+    ) { }
 
     toggleDarkMode() {
         this.layoutService.dark = !this.layoutService.dark;
@@ -47,11 +52,18 @@ export class AppTopBarComponent {
     }
 
     onStartOver() {
+        // clear any active intervals or timeoutes
+        this.timeoutService.clearAllTimers();
+
         if(this.layoutService.audio) {
             window.speechSynthesis.speak(new SpeechSynthesisUtterance('Starting over'));
         }
 
         this.ticketService.bookTrip = true;
         this.ticketService.initialCheck = false;
+    }
+
+    lockScreen() {
+        this.authService.lockScreen();
     }
 }

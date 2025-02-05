@@ -6,6 +6,8 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { AppLayoutService, TicketService } from '../core/services';
 import { Router } from '@angular/router';
 
+import { GoogleAnalyticsService } from 'src/app/core/services/google-analytics.service';
+
 @Component({
     selector: 'app-layout',
     templateUrl: './app.layout.component.html',
@@ -20,11 +22,21 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
     checkTripCompleteSubscription: Subscription;
     checkTripErrorSubscription: Subscription;
 
+    visible: boolean = false;
+
+    // switches the visible property, used to open or close the 
+    // terms and conditions dialog box on the home page
+    toggleDialog(): void {
+        this.visible = !this.visible;
+    }
+
     constructor(
         public messageService: MessageService,
         public ticketService: TicketService,
         public layoutService: AppLayoutService,
-        private router: Router) { }
+        private router: Router,
+        protected gaService: GoogleAnalyticsService
+    ) { }
 
     get containerClass() {
         return {

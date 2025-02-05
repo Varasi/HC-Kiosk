@@ -1,27 +1,35 @@
 export const environment = {
     production: false,
-
-    version: '1.0.9',
-    release_date: 'May 31, 2024',
-
-    deployment: 'HIRTA',
-    appName: 'KIOSK',
-
-    trip_origin: 'Dallas County Hospital',
-
-    kiosk_lat: '41.83415474832384',
-    kiosk_lng: '-94.09353101534363',
-    kiosk_address: '610 10th Street, Perry, IA 50220, USA',
-
-    hirta_via_account_name: 'Health_Connector',
-
-    southwestLat: 40.62844733741235, 
-    southwestLng: -95.51470502550431,
-    northeastLat: 42.94950757503583, 
-    northeastLng: -91.7188823451054,
-
-    client_id: 'XXXXXXXXXXXXXXXXXXXXx',
-    client_secret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-
-    api_url: 'https://api.hirtahealthconnector.org/'
-};
+  
+    version: "#.#.#",
+    release_date: "Month, Day Year",
+  
+    deployment: "Name",
+    appName: "Name",
+  
+    trip_origin: "Place",
+  
+    kiosk_lat: "##.######",
+    kiosk_lng: "-##.######",
+    kiosk_address: "Street address",
+  
+    hirta_via_account_name: "Name",
+  
+    southwestLat: 11.1111111,
+    southwestLng: -11.1111111,
+    northeastLat: 11.1111111,
+    northeastLng: -11.1111111,
+  
+    client_id: "client id",
+    client_secret: "client secret",
+  
+    user_max_time: 1 * 1000, // time till the Are you still there? box pops up
+    user_max_time_warn: 1 * 1000, // time to click Yes I'm still here before being bounced to homepage
+    user_max_time_pickup: 1 * 1000,
+    user_max_time_pickup_warn: 1,
+  
+    api_url: "url",
+  
+    ga_tag_id: "tag id",
+    google_tag_mgr: `url`,
+  };

@@ -26,6 +26,7 @@ export class TicketService {
         },
         passengers: [
             { type: 'Guest', total: 0, max: 2 },
+            { type: 'Guest (WAV)', total: 0, max: 1 },
             { type: 'PCA', total: 0, max: 1 },
             { type: 'PCA (WAV)', total: 0, max: 1 }
         ]
@@ -133,6 +134,7 @@ export class TicketService {
             },
             passengers: [
                 { type: 'Guest', total: 0, max: 2 },
+                { type: 'Guest (WAV)', total: 0, max: 1 },
                 { type: 'PCA', total: 0, max: 1 },
                 { type: 'PCA (WAV)', total: 0, max: 1 }
             ]
