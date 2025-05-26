@@ -40,3 +40,25 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# frontend
+# amplify
+node_modules
+.amplify
+amplify_outputs*
+amplifyconfiguration*
+environments/
+
+
+# backend
+*.swp
+package-lock.json
+__pycache__
+.pytest_cache
+.venv
+*.egg-info
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+node_modules
