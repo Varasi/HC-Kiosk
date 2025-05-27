@@ -162,29 +162,29 @@ class HealthConnectorCdkStack(Stack):
         table.grant_read_data(dashboard_handler)
 
 
-        domain_name = 'hirtahealthconnector.org'
         # domain_name = 'hirtahealthconnector.org'
-        hosted_zone = route53_.HostedZone.from_lookup(
-            self,
-            'HealthConnectorHostedZone',
-            domain_name=domain_name
-        )
-        # had to create manually in us-east-1 for cloudfront.
-        us_east_1_certificate = acm_.Certificate.from_certificate_arn(
-            self,
-            'HealthConnectorCertificateUsEast1',
-            # certificate_arn='arn:aws:acm:us-east-1:135808953563:certificate/d76fa1be-fdea-44e4-af22-6e449a1557c2'
-            certificate_arn='arn:aws:acm:us-east-1:891377257073:certificate/2ff2ee84-3e12-4701-9628-877fabd5f76c'
-        )
-        certificate = acm_.Certificate(
-            self,
-            'HealthConnectorCertificate',
-            domain_name=domain_name,
-            subject_alternative_names=[
-                f'*.{domain_name}'
-            ],
-            validation=acm_.CertificateValidation.from_dns(hosted_zone)
-        )
+        # # domain_name = 'hirtahealthconnector.org'
+        # hosted_zone = route53_.HostedZone.from_lookup(
+        #     self,
+        #     'HealthConnectorHostedZone',
+        #     domain_name=domain_name
+        # )
+        # # had to create manually in us-east-1 for cloudfront.
+        # us_east_1_certificate = acm_.Certificate.from_certificate_arn(
+        #     self,
+        #     'HealthConnectorCertificateUsEast1',
+        #     # certificate_arn='arn:aws:acm:us-east-1:135808953563:certificate/d76fa1be-fdea-44e4-af22-6e449a1557c2'
+        #     certificate_arn='arn:aws:acm:us-east-1:891377257073:certificate/2ff2ee84-3e12-4701-9628-877fabd5f76c'
+        # )
+        # certificate = acm_.Certificate(
+        #     self,
+        #     'HealthConnectorCertificate',
+        #     domain_name=domain_name,
+        #     subject_alternative_names=[
+        #         f'*.{domain_name}'
+        #     ],
+        #     validation=acm_.CertificateValidation.from_dns(hosted_zone)
+        # )
 
         # setup the cognito user pool and the oauth scope for the API.
         user_pool, user_pool_domain = self.setup_cognito_user_pool()
@@ -198,7 +198,8 @@ class HealthConnectorCdkStack(Stack):
         bucket = s3_.Bucket(
             self,
             'HealthConnectorBucket',
-            bucket_name='health-connector-website-bucket',
+            # bucket_name='health-connector-website-bucket',//for prod
+            bucket_name='health-connector-website-bucket-varasi-dev',#for dev
             website_index_document='index.html',
             public_read_access=True,
             block_public_access=s3_.BlockPublicAccess(
@@ -210,37 +211,37 @@ class HealthConnectorCdkStack(Stack):
         )
 
         # this one is for Kiosk!!
-        cloudfront_distribution = cloudfront_.Distribution(
-            self,
-            'HealthConnectorCloudFrontDistribution',
-            default_behavior=cloudfront_.BehaviorOptions(
-                origin=origins_.S3Origin(
-                    bucket=bucket
-                ),
-                viewer_protocol_policy=cloudfront_.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
-            ),
-            domain_names=[
-                f'dashboard.{domain_name}'
-                # f'kiosk.hirta.us'
-            ],
-            certificate=us_east_1_certificate
-        )
+        # cloudfront_distribution = cloudfront_.Distribution(
+        #     self,
+        #     'HealthConnectorCloudFrontDistribution',
+        #     default_behavior=cloudfront_.BehaviorOptions(
+        #         origin=origins_.S3Origin(
+        #             bucket=bucket
+        #         ),
+        #         viewer_protocol_policy=cloudfront_.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+        #     ),
+        #     domain_names=[
+        #         f'dashboard.{domain_name}'
+        #         # f'kiosk.hirta.us'
+        #     ],
+        #     certificate=us_east_1_certificate
+        # )
         s3_deployment_.BucketDeployment(
             self,
             'HealthConnectorBucketDeployment',
             sources=[s3_deployment_.Source.asset('website/dist')],
             destination_bucket=bucket,
-            distribution=cloudfront_distribution,
+            # distribution=cloudfront_distribution,
         )
-        route53_.ARecord(
-            self,
-            'HealthConnectorCloudFrontARecord',
-            zone=hosted_zone,
-            record_name='dashboard',
-            target=route53_.RecordTarget.from_alias(
-                route53_targets_.CloudFrontTarget(cloudfront_distribution)
-            )
-        )
+        # route53_.ARecord(
+        #     self,
+        #     'HealthConnectorCloudFrontARecord',
+        #     zone=hosted_zone,
+        #     record_name='dashboard',
+        #     target=route53_.RecordTarget.from_alias(
+        #         route53_targets_.CloudFrontTarget(cloudfront_distribution)
+        #     )
+        # )
 
         api_stage_name = 'prod'
         api = apigw_.RestApi(
@@ -256,21 +257,21 @@ class HealthConnectorCdkStack(Stack):
                 stage_name=api_stage_name,
                 metrics_enabled=True,
             ),
-            domain_name=apigw_.DomainNameOptions(
-                domain_name=f'api.{domain_name}',
-                certificate=certificate,
-                endpoint_type=apigw_.EndpointType.REGIONAL
-            )
+            # domain_name=apigw_.DomainNameOptions(
+            #     domain_name=f'api.{domain_name}',
+            #     certificate=certificate,
+            #     endpoint_type=apigw_.EndpointType.REGIONAL
+            # )
         )     
-        route53_.ARecord(
-            self,
-            'HealthConnectorApiARecord',
-            zone=hosted_zone,
-            record_name='api',
-            target=route53_.RecordTarget.from_alias(
-                route53_targets_.ApiGateway(api)
-            )
-        )
+        # route53_.ARecord(
+        #     self,
+        #     'HealthConnectorApiARecord',
+        #     zone=hosted_zone,
+        #     record_name='api',
+        #     target=route53_.RecordTarget.from_alias(
+        #         route53_targets_.ApiGateway(api)
+        #     )
+        # )
 
         authorizer = apigw_.CognitoUserPoolsAuthorizer(
             self,

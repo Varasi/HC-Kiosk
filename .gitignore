@@ -48,6 +48,8 @@ node_modules
 amplify_outputs*
 amplifyconfiguration*
 environments/
+.angular
+dist
 
 
 # backend
