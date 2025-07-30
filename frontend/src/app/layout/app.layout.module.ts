@@ -27,6 +27,11 @@ import { AccountCheckTripComponent } from './app.steps/account-check-trip/accoun
 import { AppLoginComponent } from './app.login/app.login.component';
 import { LockscreenComponent } from './lockscreen/lockscreen.component';
 
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
+
 @NgModule({
     declarations: [
         AppTopBarComponent,
@@ -53,14 +58,32 @@ import { LockscreenComponent } from './lockscreen/lockscreen.component';
         RippleModule,
         RouterModule,
         SharedModule,
-        NgxTouchKeyboardModule
+        NgxTouchKeyboardModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        })
     ],
     providers: [
         DialogService,
-        TicketService
+        TicketService,
+        {
+            provide: TRANSLATE_HTTP_LOADER_CONFIG,
+            useValue: {
+                prefix: './assets/i18n/',
+                suffix: '.json'
+            }
+        }
     ],
     exports: [
         AppLayoutComponent,
     ]
 })
 export class AppLayoutModule { }
+
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader();
+}

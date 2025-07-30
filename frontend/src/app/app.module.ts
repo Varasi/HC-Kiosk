@@ -14,6 +14,21 @@ import { AppComponent } from './app.component';
 import { CognitoCallbackComponent } from './cognito-callback/cognito-callback.component';
 import { GoogleAnalyticsService } from './core/services/google-analytics.service';
 
+import { Amplify } from 'aws-amplify'; 
+import { environment } from 'src/environments/environment'; 
+
+Amplify.configure({
+    Auth: {
+        Cognito: {
+            userPoolId: environment.cognito_user_pool_id,
+            userPoolClientId: environment.cognito_client_id
+        },
+    },
+});
+
+
+
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -28,7 +43,7 @@ import { GoogleAnalyticsService } from './core/services/google-analytics.service
         CoreModule,
         SharedModule,
         AppRoutingModule,
-        AppLayoutModule,
+        AppLayoutModule
     ],
     providers: [
         GoogleAnalyticsService,

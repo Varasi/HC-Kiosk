@@ -7,7 +7,7 @@
             style="background-color: #9da5acad !important; flex-wrap: wrap;">
             <form #loginForm="ngForm" novalidate>
                 <div class="mx-7 flex flex-column gap-3 px-1 pt-7 pb-5">
-<!--                     <div class="p-inputgroup mt-3">
+                    <div class="p-inputgroup mt-3">
                         <span class="p-inputgroup-addon"><i class="pi pi-user text-5xl"></i></span>
                         <span class="p-float-label">
                             <input type="username"
@@ -22,7 +22,7 @@
                                 name="username" 
                                 type="username" required/>
                         </span>
-                    </div> -->
+                    </div>
                     <div class="p-inputgroup mt-3 mb-7">
                         <span class="p-inputgroup-addon"><i class="pi pi-lock text-5xl"></i></span>
                         <span class="p-float-label">
@@ -43,18 +43,18 @@
                         class="px-1 p-button-lg p-button-raised h-5rem text-4xl font-semibold" (click)="login()"
                         [disabled]="!loginForm.valid" label="LOGIN">
                     </button>
-                    <button pButton pRipple icon="pi pi-sign-in" 
+                    <!-- <button pButton pRipple icon="pi pi-sign-in" 
                         class="px-1 p-button-lg p-button-raised h-5rem text-4xl font-semibold" (click)="cognitoLogin()"
                         label="AWS LOGIN" [disabled]="">
-                    </button>
-                    <button pButton pRipple icon="pi pi-key" 
+                    </button> -->
+                    <!-- <button pButton pRipple icon="pi pi-key" 
                         class="px-1 p-button-lg p-button-raised h-5rem text-4xl font-semibold" (click)="hwlogin()"
                         label="FIDO2 LOGIN" [disabled]="true">
-                    </button>
-                    <button pButton pRipple icon="pi pi-user-plus" 
+                    </button> -->
+                    <!-- <button pButton pRipple icon="pi pi-user-plus" 
                         class="px-1 p-button-lg p-button-raised h-5rem text-4xl font-semibold" (click)="register()"
                         label="REGISTER KEY" [disabled]="true">
-                    </button>
+                    </button> -->
                     <div class="text-3xl mt-4 mb-5 px-3 pt-3">{{appVersion}}</div>
                 </div>
             </form>

@@ -1,0 +1,44 @@
+export const environment = {
+  production: true,
+
+  version: "1.0.11",
+  release_date: "Feb 3, 2025", //Feb 3, 2025
+
+  // deployment: "Name",  //dev, prod, etc.  //not used
+  // appName: "Name", //Health Connector or some other name  //not used
+
+  trip_origin: "Dallas County Hospital", //city or facilty name
+
+  kiosk_lat: "41.83360314324577",  //physical location of kiosk (latitude)
+  kiosk_lng: "-94.09353101883748", //physical location of kiosk (longitude)
+  kiosk_address: "610 10th St, Perry, IA 50220, United States", //physical location of kiosk (address)
+
+  hirta_via_account_name: "Health_Connector", //while booking trip in kiosk, it is used as sub_service
+
+  southwestLat: 40.62844733741235, //southwest corner of the map (latitude) map area restriction
+  southwestLng: -95.51470502550431, //southwest corner of the map (longitude)
+  northeastLat: 42.94950757503583, //northeast corner of the map (latitude)
+  northeastLng: -91.7188823451054, //northeast corner of the map (longitude)
+
+  user_max_time: 1 * 60 * 1000, // time till the Are you still there? box pops up
+  user_max_time_warn: 1 * 60 * 1000, // time to click Yes I'm still here before being bounced to homepage
+  user_max_time_pickup: 1 * 1000,  //not used
+  user_max_time_pickup_warn: 1,  //not used
+
+  api_url: "url", ends with '/'
+
+  ga_tag_id: "G-MJ4EX0L1S2",
+  google_tag_mgr: "",
+  cognito_client_id: "authentication cleint id",
+  cognito_user_pool_id: "user pool id",
+  cognito_token_use: "id",
+  google_maps_api_key: "api key",
+
+  // cognito_domain: "userpool domain",
+  // baseUrl: "s3 bucket url",
+  // lock_screen_password: "some screen password",
+  // client_id: "client id",
+  // client_secret: "client secret",
+
+  region: 'ap-south-1'
+};

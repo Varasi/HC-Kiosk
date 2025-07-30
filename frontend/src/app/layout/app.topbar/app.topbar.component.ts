@@ -5,6 +5,7 @@ import { MenuItem } from 'primeng/api';
 
 import { AppLayoutService, TicketService, AppAuthService } from '../../core/services';
 import { TimeoutService } from 'src/app/core/services/timeout.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-topbar',
@@ -13,6 +14,7 @@ import { TimeoutService } from 'src/app/core/services/timeout.service';
 })
 export class AppTopBarComponent {
     items!: MenuItem[];
+    currentLang = 'en';
 
     @ViewChild('menubutton') menuButton!: ElementRef;
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -23,9 +25,18 @@ export class AppTopBarComponent {
         public ticketService: TicketService,
         public authService: AppAuthService,
         private router: Router,
-        public timeoutService: TimeoutService
-    ) { }
+        public timeoutService: TimeoutService,
+        private translate: TranslateService
+    ) { 
+        translate.addLangs(['en', 'es']);
+        translate.setDefaultLang(this.currentLang);
+        translate.use('es');
+    }
 
+    toggleLanguage() {
+        this.currentLang = this.currentLang === 'en' ? 'es' : 'en';
+        this.translate.use(this.currentLang);
+    }
     toggleDarkMode() {
         this.layoutService.dark = !this.layoutService.dark;
 

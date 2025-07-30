@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import boto3
+import os
 from botocore.exceptions import ClientError
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
@@ -14,7 +15,9 @@ class ViaConnection:
         self._time_zone = ZoneInfo('America/Chicago')
         self._now = datetime.now(tz=self._time_zone)
         self._now_timestamp = self._now.timestamp()
-        self._region='us-west-1'
+        # self._region='us-east-1'
+        # self._region='ap-south-1'
+        self._region = os.environ.get('region', 'us-east-1')
         
         # get credentials
         if on_prem:
@@ -49,6 +52,7 @@ class ViaConnection:
         # if secret_name is None:
         #     return None
         # create a Secrets Manager client
+        print("get aws secret called")
         session = boto3.session.Session()
         client = session.client(
             service_name='secretsmanager',
@@ -62,6 +66,7 @@ class ViaConnection:
             raise e
         # return secret as a dictionary
         secret = get_secret_value_response['SecretString']
+        print("secret values:",secret);
         secret_dict = json.loads(secret)
         return secret_dict
     
@@ -91,6 +96,7 @@ class ViaConnection:
     #   date of birth in ISO 8601: yyyy-mm-dd
     #   phone number in E.164: +12345678989
     def get_rider_details(self, **kwargs):
+        print("calling get_rider_details func")
         if self._secret is None:
             return None
 
@@ -107,6 +113,7 @@ class ViaConnection:
         for p in priority:
             if p in payload:
                 rider_data = self._ping_via_for_rider({p: payload[p]})
+                print("rider_data:",rider_data,'for p :',p)
                 if len(rider_data) > 0:
                     break
 
@@ -116,10 +123,15 @@ class ViaConnection:
             raise ValueError("MOD/ATMS Error: You are not currently enrolled in HIRTA or Health Connector. Please check your personal information, call (877) 686-0029 or see the front desk to register.")
 
     def _ping_via_for_rider(self, payload):
+        print('calling _ping_via_for_rider func')
+        print("payload:",payload)
         r = self._oauth.get(f'https://{self._secret['via_api_url']}/riders', params=payload)
+        print("status:",r.status_code)
         if r.status_code in (500, 400):
+            print("error in fetching rider details:",r.json())
             raise SystemError(f'Error: {json.dumps(r.json())}')
         data = r.json()
+        print('data:',data)
         # return rider data if exists
         if 'riders' in data:
             return data['riders'][0]
@@ -129,14 +141,18 @@ class ViaConnection:
     # Set rider information
     # In addition to params accepted for get_rider_details, also can pass via payload.
     def set_rider_info(self, payload=None, **kwargs):
+        print("calling set rider info")
         # Handle payloads for via
         if payload:
             kwargs = {k:v for k,v in payload['passenger_info'].items() if k in ['phone_number', 'email']}
 
         rider = self.get_rider_details(**kwargs)
+        print("rider:",rider)
         self._rider = rider
         self._rider_id = rider['rider_id']
         self._rider_hc = rider.get('sub_services', {}).get('Health_Connector', False)
+        print("rider_hc",self._rider_hc)
+        print("calling set rider info done")
 
     def set_trip_params(self):
         week_ahead = int((self._now + timedelta(weeks=1)).timestamp())
@@ -193,9 +209,10 @@ class ViaConnection:
 
     # request and book a trip
     def via_request_book_trip(self, payload):
+        print("via_request_book_trip func called")
         request_data = self.via_request_trip(payload)
         ## Deal with error on no bookings available.
-        print(request_data)
+        print('request_data',request_data)
         if len(request_data['trips']) > 0:
             trip_id = request_data['trips'][0].get('trip_id')
             return self.via_book_trip(trip_id)
@@ -204,18 +221,22 @@ class ViaConnection:
 
     # request a trip
     def via_request_trip(self, payload):
+        print("via_request_trip func called")
         # set rider if it doesn't exist
         if not self._rider:
             self.set_rider_info(payload=payload)
 
         # if they are qualified, use the Health Connector sub_service.
         payload['sub_service'] = 'Health_Connector' if self._rider_hc else 'NEMT'
-        print(payload)
+        # payload['sub_service'] = 'NEMT'
+        print("payload:",payload)
         # Request Trip Flow
         r_request = self._oauth.post(f'https://{self._secret['via_api_url']}/trips/request', json=payload)
+        print("r_request:",r_request.status_code)
         if r_request.status_code in (500, 400):
             raise SystemError(f'Error: {json.dumps(r_request.json())}')
         request_data = r_request.json()
+        print("request_data")
         return request_data
 
         # Write book flow here

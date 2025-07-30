@@ -44,7 +44,10 @@ def api_handler(event, context):
     elif ep == '/kiosk_request' or ep == '/connector':
         try:
             vc = ViaConnection()
+            print("via requesting trip")
             output = vc.via_request_book_trip(payload)
+            print("trip requested , next booking trip")
+            print('output:',output)
             dd_new_trip(via_response=output)             
         except ValueError as e:
             output = str(e)
@@ -56,6 +59,7 @@ def api_handler(event, context):
     elif ep == '/kiosk_request_detail':
         try:
             vc = ViaConnection()
+            print('trip_id',payload['trip_id'])
             output = vc.via_trip_details(payload['trip_id'])
         except SystemError as e:
             print(e)

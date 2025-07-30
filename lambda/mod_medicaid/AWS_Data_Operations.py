@@ -5,6 +5,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 def dd_new_trip(lyft_trip_data=None, atms_ride_id=str(uuid.uuid4()), via_response=None):
+    print('dd_new_trip called')
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.Table('MOD_Medicaid')
 
@@ -24,6 +25,7 @@ def dd_new_trip(lyft_trip_data=None, atms_ride_id=str(uuid.uuid4()), via_respons
         "lyft_request_payload": lyft_request_payload, 
         "via_response_payload": via_response_payload
     })
+    print("added new trip")
         
 def dd_get_via_trip_id(tapi_trip_id):
     dynamodb = boto3.resource("dynamodb")

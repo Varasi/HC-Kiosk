@@ -15,7 +15,8 @@ export class LockscreenComponent {
   ) { }
 
   passwordInput: string;
-  password: string = environment.lock_screen_password;
+  // password: string = environment.lock_screen_password;
+  password: string;
   awsLoginDisabled: boolean = true;
 
   // if input pw is correct, login after verifying AWS JWT
@@ -31,7 +32,7 @@ export class LockscreenComponent {
     }
   }
 
-  public cognitoLogin() {
-    this.authService.cognitoLogin();
-  }
+  // public cognitoLogin() {
+  //   this.authService.cognitoLogin();
+  // }
 }

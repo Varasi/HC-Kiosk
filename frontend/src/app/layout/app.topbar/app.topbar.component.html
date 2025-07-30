@@ -5,6 +5,12 @@
     </a>
     <div #topbarmenu class="layout-topbar-menu mt-2"
         [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <button type="button" pRipple pButton (click)="toggleLanguage()"
+            class="hover:blue800 p-link p-button-text text-3xl" 
+            style="width: auto; margin-right: 2rem; padding: 0.625rem 1.25rem;">
+            <i class="pi pi-{{ layoutService.audio ? 'volume-up' : 'volume-off' }} mr-2 text-3xl"></i>
+            <span class="font-semibold text-3xl pb-1">ENG {{ layoutService.audio ? 'ON' : 'OFF' }} SPA</span>
+        </button>
         <button type="button" pRipple pButton (click)="toggleAudioMode()"
             class="hover:blue800 p-link p-button-text text-3xl" 
             style="width: auto; margin-right: 2rem; padding: 0.625rem 1.25rem;">
@@ -21,7 +27,7 @@
             class="hover:blue800 p-link p-button-text text-3xl text-900"
             style="width: auto; padding: 0.625rem 1.25rem;">
             <i class="pi pi-undo mr-2 text-3xl"></i>
-            <span class="font-semibold text-3xl pb-1">START OVER</span>
+            <span class="font-semibold text-3xl pb-1">{{ 'START OVER' | translate }}</span>
         </button>
         <button type="button" pRipple pButton (click)="lockScreen()"
             class="hover:blue800 p-link p-button-text text-3xl text-900"

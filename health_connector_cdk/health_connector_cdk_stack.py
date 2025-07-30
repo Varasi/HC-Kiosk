@@ -13,7 +13,8 @@ from aws_cdk import (
     aws_certificatemanager as acm_,
     aws_cloudfront as cloudfront_,
     aws_cloudfront_origins as origins_,
-    aws_secretsmanager as secretsmanager
+    aws_secretsmanager as secretsmanager,
+    aws_iam as iam
 )
 from constructs import Construct
 
@@ -28,12 +29,10 @@ class ApiScope():
 
 class HealthConnectorCdkStack(Stack):
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, env_name: str = "dev", **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-
-        # secret = secretsmanager.Secret.from_secret_name_v2(self, 'dev_credentials', 'dev_credentials')
-        secret = secretsmanager.Secret.from_secret_name_v2(self, 'prod_credentials', 'prod_credentials')
-
+        self.env_name = env_name
+        
         table_name = 'MOD_Medicaid'
         table = dynamodb_.TableV2(
             self,
@@ -73,7 +72,7 @@ class HealthConnectorCdkStack(Stack):
         # api handler lambda function.
         api_handler = lambda_.Function(
             self,
-            'HealthConnectorApiHandler',
+            'HealthConnectorKioskApiHandler',
             runtime=lambda_.Runtime.PYTHON_3_12,
             code=lambda_.Code.from_asset('lambda',
                 bundling=BundlingOptions(
@@ -85,40 +84,50 @@ class HealthConnectorCdkStack(Stack):
             timeout=Duration.minutes(1),
             environment={
                 'TABLE_NAME': table_name,
-                'Execution': "On_AWS"
+                'Execution': "On_AWS",
+                'region': self.region
             }
         )
 
-        secret.grant_read(api_handler.role)
-
-        dashboard_handler = lambda_.Function(
-            self,
-            'HealthConnectorDashboardHandler',
-            runtime=lambda_.Runtime.PYTHON_3_12,
-            code=lambda_.Code.from_asset('lambda'),
-            handler='health_connector.dashboard_handler',
-            environment={
-                'TABLE_NAME': table_name
-            }
-        )
-        kiosk_workerbee = lambda_.Function(
-            self,
-            'HealthConnectorKioskWorker',
-            runtime=lambda_.Runtime.PYTHON_3_12,
-            code=lambda_.Code.from_asset('lambda',
-                bundling=BundlingOptions(
-                    image=lambda_.Runtime.PYTHON_3_12.bundling_image,
-                    command=["bash", "-c", "pip install -r requirements.txt -t /asset-output && rsync -r . /asset-output"
-                ])
-            ),
-            handler='health_connector.lambda_kiosk',
-            timeout=Duration.minutes(10),
-            environment={
-                'TABLE_NAME': table_name
-            }
+        # secret.grant_read(api_handler.role)
+        api_handler.role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "secretsmanager:GetSecretValue",
+                    "secretsmanager:DescribeSecret"
+                ],
+                resources=["*"]  # All secrets
+            )
         )
 
-        secret.grant_read(kiosk_workerbee.role)
+        # dashboard_handler = lambda_.Function(
+        #     self,
+        #     'HealthConnectorKioskDashboardHandler',
+        #     runtime=lambda_.Runtime.PYTHON_3_12,
+        #     code=lambda_.Code.from_asset('lambda'),
+        #     handler='health_connector.dashboard_handler',
+        #     environment={
+        #         'TABLE_NAME': table_name
+        #     }
+        # )
+        # kiosk_workerbee = lambda_.Function(
+        #     self,
+        #     'HealthConnectorKioskWorker',
+        #     runtime=lambda_.Runtime.PYTHON_3_12,
+        #     code=lambda_.Code.from_asset('lambda',
+        #         bundling=BundlingOptions(
+        #             image=lambda_.Runtime.PYTHON_3_12.bundling_image,
+        #             command=["bash", "-c", "pip install -r requirements.txt -t /asset-output && rsync -r . /asset-output"
+        #         ])
+        #     ),
+        #     handler='health_connector.lambda_kiosk',
+        #     timeout=Duration.minutes(10),
+        #     environment={
+        #         'TABLE_NAME': table_name
+        #     }
+        # )
+
+        # secret.grant_read(kiosk_workerbee.role)
         
         kiosk_statusbee = lambda_.Function(
             self,
@@ -133,33 +142,43 @@ class HealthConnectorCdkStack(Stack):
             handler='health_connector.lambda_kiosk_status',
             timeout=Duration.minutes(10),
             environment={
-                'TABLE_NAME': table_name
+                'TABLE_NAME': table_name,
+                'region': self.region
             }
         )
 
-        secret.grant_read(kiosk_statusbee.role)
-
-        lyft_tapi_trips = lambda_.Function(
-            self,
-            'HealthConnectorTAPITrips',
-            runtime=lambda_.Runtime.PYTHON_3_12,
-            code=lambda_.Code.from_asset('lambda',
-                bundling=BundlingOptions(
-                    image=lambda_.Runtime.PYTHON_3_12.bundling_image,
-                    command=["bash", "-c", "pip install -r requirements.txt -t /asset-output && rsync -r . /asset-output"
-                ])
-            ),
-            handler='health_connector.lambda_lyft_tapi_trips_v1',
-            timeout=Duration.minutes(10),
-            environment={
-                'TABLE_NAME': table_name
-            }
+        # secret.grant_read(kiosk_statusbee.role)
+        kiosk_statusbee.role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "secretsmanager:GetSecretValue",
+                    "secretsmanager:DescribeSecret"
+                ],
+                resources=["*"]  # All secrets
+            )
         )
 
-        table.grant_read_write_data(lyft_tapi_trips)
+        # lyft_tapi_trips = lambda_.Function(
+        #     self,
+        #     'HealthConnectorTAPITrips',
+        #     runtime=lambda_.Runtime.PYTHON_3_12,
+        #     code=lambda_.Code.from_asset('lambda',
+        #         bundling=BundlingOptions(
+        #             image=lambda_.Runtime.PYTHON_3_12.bundling_image,
+        #             command=["bash", "-c", "pip install -r requirements.txt -t /asset-output && rsync -r . /asset-output"
+        #         ])
+        #     ),
+        #     handler='health_connector.lambda_lyft_tapi_trips_v1',
+        #     timeout=Duration.minutes(10),
+        #     environment={
+        #         'TABLE_NAME': table_name
+        #     }
+        # )
+
+        # table.grant_read_write_data(lyft_tapi_trips)
         table.grant_read_write_data(api_handler)
         table2.grant_read_write_data(api_handler)
-        table.grant_read_data(dashboard_handler)
+        # table.grant_read_data(dashboard_handler)
 
 
         # domain_name = 'hirtahealthconnector.org'
@@ -194,12 +213,13 @@ class HealthConnectorCdkStack(Stack):
         self.setup_api_user_pool_client(user_pool, api_scope, 'Lyft')
         self.setup_api_user_pool_client(user_pool, api_scope, 'Pompano')
         self.setup_api_user_pool_client(user_pool, api_scope, 'Via')
+        self.setup_authentication_user_pool_client(user_pool, api_scope, 'Authentication')
 
         bucket = s3_.Bucket(
             self,
             'HealthConnectorBucket',
             # bucket_name='health-connector-website-bucket',//for prod
-            bucket_name='health-connector-website-bucket-varasi-dev',#for dev
+            bucket_name=f'kiosk-health-connector-website-bucket-varasi-{self.env_name}',#for dev
             website_index_document='index.html',
             public_read_access=True,
             block_public_access=s3_.BlockPublicAccess(
@@ -228,7 +248,7 @@ class HealthConnectorCdkStack(Stack):
         # )
         s3_deployment_.BucketDeployment(
             self,
-            'HealthConnectorBucketDeployment',
+            'HealthConnectorKioskBucketDeployment',
             sources=[s3_deployment_.Source.asset('website/dist')],
             destination_bucket=bucket,
             # distribution=cloudfront_distribution,
@@ -246,12 +266,12 @@ class HealthConnectorCdkStack(Stack):
         api_stage_name = 'prod'
         api = apigw_.RestApi(
             self,
-            'HealthConnectorApi',
+            'KioskHealthConnectorApi',
             default_cors_preflight_options=apigw_.CorsOptions(
                 allow_origins=apigw_.Cors.ALL_ORIGINS,
                 allow_methods=apigw_.Cors.ALL_METHODS
             ), 
-            rest_api_name='health_connector',
+            rest_api_name='kiosk_health_connector',
             deploy=True,
             deploy_options=apigw_.StageOptions(
                 stage_name=api_stage_name,
@@ -275,7 +295,7 @@ class HealthConnectorCdkStack(Stack):
 
         authorizer = apigw_.CognitoUserPoolsAuthorizer(
             self,
-            'HealthConnectorAuthorizer',
+            'HealthConnectorKisokAuthorizer',
             cognito_user_pools=[user_pool],
             identity_source=apigw_.IdentitySource.header('Authorization')
         )
@@ -293,77 +313,77 @@ class HealthConnectorCdkStack(Stack):
 
         ## MOD-MEDICAID ENDPOINTS
 
-        lyft_v1 = api.root.add_resource('v1')
-        tapi = lyft_v1.add_resource('tapi')
-        tapi_trips = tapi.add_resource('trips')
+        # lyft_v1 = api.root.add_resource('v1')
+        # tapi = lyft_v1.add_resource('tapi')
+        # tapi_trips = tapi.add_resource('trips')
 
-        tapi_providers = tapi.add_resource('providers')
-        tapi_providers.add_method(
-            'GET',
-            apigw_.LambdaIntegration(
-                api_handler,
-                # lyft_tapi_trips,
-                proxy=True
-            ),
-            authorizer=authorizer,
-            authorization_scopes=[
-                api_scope.auth_scope
-            ]
-        )
+        # tapi_providers = tapi.add_resource('providers')
+        # tapi_providers.add_method(
+        #     'GET',
+        #     apigw_.LambdaIntegration(
+        #         api_handler,
+        #         # lyft_tapi_trips,
+        #         proxy=True
+        #     ),
+        #     authorizer=authorizer,
+        #     authorization_scopes=[
+        #         api_scope.auth_scope
+        #     ]
+        # )
         
 
-        tapi_trips.add_method(
-            'POST',
-            apigw_.LambdaIntegration(
-                api_handler,
-                # lyft_tapi_trips,
-                proxy=True
-            ),
-            authorizer=authorizer,
-            authorization_scopes=[
-                api_scope.auth_scope
-            ]
-        )
+        # tapi_trips.add_method(
+        #     'POST',
+        #     apigw_.LambdaIntegration(
+        #         api_handler,
+        #         # lyft_tapi_trips,
+        #         proxy=True
+        #     ),
+        #     authorizer=authorizer,
+        #     authorization_scopes=[
+        #         api_scope.auth_scope
+        #     ]
+        # )
 
-        tapi_update = tapi_trips.add_resource('{trip_id}')
-        tapi_update.add_method(
-            'PUT',
-            apigw_.LambdaIntegration(
-                api_handler,
-                proxy=True
-            ),
-            authorizer=authorizer,
-            authorization_scopes=[
-                api_scope.auth_scope
-            ]
-        )
+        # tapi_update = tapi_trips.add_resource('{trip_id}')
+        # tapi_update.add_method(
+        #     'PUT',
+        #     apigw_.LambdaIntegration(
+        #         api_handler,
+        #         proxy=True
+        #     ),
+        #     authorizer=authorizer,
+        #     authorization_scopes=[
+        #         api_scope.auth_scope
+        #     ]
+        # )
 
-        tapi_cancel = tapi_update.add_resource('cancel')
-        tapi_cancel.add_method(
-            'POST',
-            apigw_.LambdaIntegration(
-                api_handler,
-                proxy=True
-            ),
-            authorizer=authorizer,
-            authorization_scopes=[
-                api_scope.auth_scope
-            ]
-        )
+        # tapi_cancel = tapi_update.add_resource('cancel')
+        # tapi_cancel.add_method(
+        #     'POST',
+        #     apigw_.LambdaIntegration(
+        #         api_handler,
+        #         proxy=True
+        #     ),
+        #     authorizer=authorizer,
+        #     authorization_scopes=[
+        #         api_scope.auth_scope
+        #     ]
+        # )
 
         ## KIOSK ENDPOINT
 
         ## DEPRECTATE MEEEE
 
-        connector_resource = api.root.add_resource('connector')
-        connector_resource.add_method(
-            'POST',
-            apigw_.LambdaIntegration(
-                kiosk_workerbee,
-                proxy=True
-            ),
-            authorizer=authorizer,
-        )
+        # connector_resource = api.root.add_resource('connector')
+        # connector_resource.add_method(
+        #     'POST',
+        #     apigw_.LambdaIntegration(
+        #         kiosk_workerbee,
+        #         proxy=True
+        #     ),
+        #     authorizer=authorizer,
+        # )
 
         # Fixing issue around cognito user pool by removing authoirzation scope.
         connector_resource_status = api.root.add_resource('connector_status')
@@ -397,59 +417,60 @@ class HealthConnectorCdkStack(Stack):
             authorizer=authorizer,
         )
 
-        kiosk_resource_status = api.root.add_resource('kiosk_status')
-        kiosk_resource_status.add_method(
-            'POST',
-            apigw_.LambdaIntegration(
-                api_handler,
-                proxy=True
-            ),
-            authorizer=authorizer,
-        )
+        # kiosk_resource_status = api.root.add_resource('kiosk_status')
+        # kiosk_resource_status.add_method(
+        #     'POST',
+        #     apigw_.LambdaIntegration(
+        #         api_handler,
+        #         proxy=True
+        #     ),
+        #     authorizer=authorizer,
+        # )
 
         ## VIA WEBHOOK ENDPOINT
         
-        via_webhook = api.root.add_resource('via_webhook')
-        via_webhook.add_method(
-            'POST',
-            apigw_.LambdaIntegration(
-                api_handler,
-                proxy=True
-            )
-        )
+        # via_webhook = api.root.add_resource('via_webhook')
+        # via_webhook.add_method(
+        #     'POST',
+        #     apigw_.LambdaIntegration(
+        #         api_handler,
+        #         proxy=True
+        #     )
+        # )
 
         ## MOD-EHR ENDPOINTS
 
-        dashboard_resource = api.root.add_resource('dashboard')
-        dashboard_resource.add_method(
-            'GET',
-            apigw_.LambdaIntegration(
-                dashboard_handler,
-                proxy=True
-            ),
-            authorizer=authorizer
-        )
+        # dashboard_resource = api.root.add_resource('dashboard')
+        # dashboard_resource.add_method(
+        #     'GET',
+        #     apigw_.LambdaIntegration(
+        #         dashboard_handler,
+        #         proxy=True
+        #     ),
+        #     authorizer=authorizer
+        # )
 
-        self.setup_web_user_pool_client(
-            user_pool=user_pool,
-            callback_url1='https://kiosk.hirta.us/',
-            callback_url2='https://kiosk.hirta.us/static/cognito.html'
-        )
+        # self.setup_web_user_pool_client(
+        #     user_pool=user_pool,
+        #     callback_url1='https://kiosk.hirta.us/',
+        #     callback_url2='https://kiosk.hirta.us/static/cognito.html'
+        # )
 
 
     def setup_cognito_user_pool(self) -> tuple[cognito_.UserPool, cognito_.UserPoolDomain]:
 
         user_pool = cognito_.UserPool(
             self,
-            'HealthConnectorUserPool',
+            'KioskUserPool',
             account_recovery=cognito_.AccountRecovery.EMAIL_ONLY,
             auto_verify=cognito_.AutoVerifiedAttrs(
                 email=True
             ),
-            user_pool_name='health_connector_user_pool',
+            user_pool_name='kiosk_user_pool',
             self_sign_up_enabled=False,
             sign_in_aliases=cognito_.SignInAliases(
-                email=True
+                # email=True
+                username=True
             ),
             user_invitation=cognito_.UserInvitationConfig(
                 email_subject='Health Connector Invitation',
@@ -459,10 +480,10 @@ class HealthConnectorCdkStack(Stack):
 
         user_pool_domain = cognito_.UserPoolDomain(
             self,
-            'HealthConnectorUserPoolDomain',
+            'HealthConnectorKioskUserPoolDomain',
             user_pool=user_pool,
             cognito_domain=cognito_.CognitoDomainOptions(
-                domain_prefix='health-connector'
+                domain_prefix=f'health-connector-{self.env_name}'
             )
         )
 
@@ -489,6 +510,44 @@ class HealthConnectorCdkStack(Stack):
             resource_server_identifier=resource_server_identifier
         )
 
+    def setup_authentication_user_pool_client(self, user_pool: cognito_.UserPool, api_scope: ApiScope, client: str) -> cognito_.UserPoolClient:
+        auth_userpool_client = cognito_.UserPoolClient(
+            self,
+            f'KioskUserPoolApiClient-{client}',
+            user_pool=user_pool,
+            user_pool_client_name=f'api_client_{client}',
+            auth_session_validity=Duration.minutes(3),
+            refresh_token_validity=Duration.minutes(8 * 24 * 60), # 8 days
+            access_token_validity=Duration.minutes(1 * 24 * 60), # 1 day
+            id_token_validity=Duration.minutes(1 * 24 * 60), # 1 day
+            auth_flows=cognito_.AuthFlow(user_password=True, user_srp=True),
+            supported_identity_providers=[
+                cognito_.UserPoolClientIdentityProvider.COGNITO
+            ],
+            o_auth=cognito_.OAuthSettings(
+                flows=cognito_.OAuthFlows(
+                    implicit_code_grant=True, authorization_code_grant=True
+                ),
+                scopes=[cognito_.OAuthScope.OPENID, cognito_.OAuthScope.EMAIL],
+                # callback_urls=[f"https://{self.config.DOMAIN}/"],
+                callback_urls=["https://www.google.com/"],
+            ),
+         )
+        
+        # auth_identity_pool = cognito_.CfnIdentityPool(
+        #     self,
+        #     f'KioskIdentityPool-{client}',
+        #     identity_pool_name = f'Kiosk_Identity_pool_{client}',
+        #     allow_unauthenticated_identities=False,
+        #     cognito_identity_providers=[
+        #         cognito_.CfnIdentityPool.CognitoIdentityProviderProperty(
+        #             client_id=auth_userpool_client.user_pool_client_id,
+        #             provider_name=user_pool.user_pool_provider_name,
+        #         )
+        #     ],
+        # )
+        return auth_userpool_client
+
     def setup_api_user_pool_client(self, user_pool: cognito_.UserPool, api_scope: ApiScope, client: str) -> cognito_.UserPoolClient:
 
         return cognito_.UserPoolClient(
@@ -510,36 +569,36 @@ class HealthConnectorCdkStack(Stack):
             )
         )
 
-    def setup_web_user_pool_client(self, user_pool: cognito_.UserPool, callback_url1: str, callback_url2: str) -> cognito_.UserPoolClient:
+    # def setup_web_user_pool_client(self, user_pool: cognito_.UserPool, callback_url1: str, callback_url2: str) -> cognito_.UserPoolClient:
 
-        return cognito_.UserPoolClient(
-            self,
-            'HealthConnectorUserPoolWebClient',
-            user_pool=user_pool,
-            user_pool_client_name='health_connector_user_pool_web_client',
-            auth_session_validity=Duration.minutes(3),
-            refresh_token_validity=Duration.minutes(8 * 24 * 60), # 8 days
-            access_token_validity=Duration.minutes(1 * 24 * 60), # 1 day
-            id_token_validity=Duration.minutes(1 * 24 * 60), # 1 day
-            auth_flows=cognito_.AuthFlow(user_password=True),
-            o_auth=cognito_.OAuthSettings(
-                flows=cognito_.OAuthFlows(
-                    implicit_code_grant=True,
-                    authorization_code_grant=True
-                ),
-                scopes=[
-                    cognito_.OAuthScope.OPENID,
-                    cognito_.OAuthScope.EMAIL
-                ],
-                callback_urls=[
-                    callback_url1,
-                    callback_url2
-                ],
-                logout_urls=[
-                    callback_url1
-                ]
-            ),
-            supported_identity_providers=[
-                cognito_.UserPoolClientIdentityProvider.COGNITO
-            ]
-        )
+    #     return cognito_.UserPoolClient(
+    #         self,
+    #         'HealthConnectorUserPoolWebClient',
+    #         user_pool=user_pool,
+    #         user_pool_client_name='health_connector_user_pool_web_client',
+    #         auth_session_validity=Duration.minutes(3),
+    #         refresh_token_validity=Duration.minutes(8 * 24 * 60), # 8 days
+    #         access_token_validity=Duration.minutes(1 * 24 * 60), # 1 day
+    #         id_token_validity=Duration.minutes(1 * 24 * 60), # 1 day
+    #         auth_flows=cognito_.AuthFlow(user_password=True),
+    #         o_auth=cognito_.OAuthSettings(
+    #             flows=cognito_.OAuthFlows(
+    #                 implicit_code_grant=True,
+    #                 authorization_code_grant=True
+    #             ),
+    #             scopes=[
+    #                 cognito_.OAuthScope.OPENID,
+    #                 cognito_.OAuthScope.EMAIL
+    #             ],
+    #             callback_urls=[
+    #                 callback_url1,
+    #                 callback_url2
+    #             ],
+    #             logout_urls=[
+    #                 callback_url1
+    #             ]
+    #         ),
+    #         supported_identity_providers=[
+    #             cognito_.UserPoolClientIdentityProvider.COGNITO
+    #         ]
+    #     )

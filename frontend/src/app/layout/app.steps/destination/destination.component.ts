@@ -77,14 +77,25 @@ export class DestinationComponent implements OnInit {
   destComplete() {
     let payload = this.ticketService.getTripRequestPayload();
     this.booking = true;
-
-    this.dataService.bookKioskTrip(payload, this.authService.idToken).subscribe({
-      next: (trip_data: any) => {
-      // validate AWS JWT
-      if (this.authService.validateToken(true)) {
+    console.log('idtoken:',this.authService.idToken)
+    this.authService.validateToken(true).then(tokenValid => {
+      if (tokenValid){
+        this.dataService.bookKioskTrip(payload, this.authService.idToken).subscribe({
+          next: (trip_data: any) => {
+          // validate AWS JWT
+          console.log('trip_data_1:',trip_data);
+           
           if (Array.isArray(trip_data)) {
-            let errorInfo = JSON.parse(trip_data[0].replace('MOD/ATMS Error:', ''));
+            console.log('trip_data[0]:',trip_data[0])
+            if (typeof trip_data[0] === 'string' && trip_data[0].startsWith('Error:')) {
+              trip_data[0] = trip_data[0].replace('Error:', '');
+            }else if(typeof trip_data[0] === 'string' && trip_data[0].startsWith('MOD/ATMS Error:')){
+              trip_data[0] = trip_data[0].replace('MOD/ATMS Error:', '');
+            }
+            // let errorInfo = JSON.parse(trip_data[0].replace('MOD/ATMS Error:', ''));
+            let errorInfo = JSON.parse(trip_data[0]);
             if (errorInfo.info) {
+              console.log("error while booking trip:",JSON.stringify(errorInfo));
               if (errorInfo.message === 'NoSuchRiderError'){
                 this.ticketService.destinationError(`You are not currently enrolled in Health Connector service. Please call (877) 686-0029 or see the front desk to register.`);
               } else if(errorInfo.message === 'DestinationOutOfZone') {
@@ -99,6 +110,8 @@ export class DestinationComponent implements OnInit {
             }
           } else {
             const trip_id = trip_data.trip_id;
+            console.log("calling bookkiosktripdetails trip_id:",trip_id);
+            console.log('trip_data:',trip_data)
             this.dataService.bookKioskTripDetails(trip_id, this.authService.idToken).subscribe({
               next: (trip_data_details: any) => {
                 if (Array.isArray(trip_data_details)) {
@@ -126,12 +139,18 @@ export class DestinationComponent implements OnInit {
             });
           }
           this.booking = false;
-        }
-      }, error: () => {
+            
+          }, error: () => {
+            this.booking = false;
+            this.ticketService.destinationError('Error booking the trip! Please try again later!');
+          }
+        });
+      }else{
         this.booking = false;
-        this.ticketService.destinationError('Error booking the trip! Please try again later!');
       }
     });
+    
+    
   }
 
   prevPage() {
