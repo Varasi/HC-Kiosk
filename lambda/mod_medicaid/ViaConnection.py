@@ -150,7 +150,8 @@ class ViaConnection:
         print("rider:",rider)
         self._rider = rider
         self._rider_id = rider['rider_id']
-        self._rider_hc = rider.get('sub_services', {}).get('Health_Connector', False)
+        # self._rider_hc = rider.get('sub_services', {}).get('Health_Connector', False)
+        self._rider_hc = rider.get('sub_services', {}).get('nemt', False)
         print("rider_hc",self._rider_hc)
         print("calling set rider info done")
 
@@ -227,8 +228,9 @@ class ViaConnection:
             self.set_rider_info(payload=payload)
 
         # if they are qualified, use the Health Connector sub_service.
-        payload['sub_service'] = 'Health_Connector' if self._rider_hc else 'NEMT'
-        # payload['sub_service'] = 'NEMT'
+        # payload['sub_service'] = 'Health_Connector' if self._rider_hc else 'NEMT'
+        # payload['sub_service'] = 'nemt' if self._rider_hc else ''
+        payload['sub_service'] = 'NEMT'
         print("payload:",payload)
         # Request Trip Flow
         r_request = self._oauth.post(f'https://{self._secret['via_api_url']}/trips/request', json=payload)
@@ -236,7 +238,7 @@ class ViaConnection:
         if r_request.status_code in (500, 400):
             raise SystemError(f'Error: {json.dumps(r_request.json())}')
         request_data = r_request.json()
-        print("request_data")
+        print("request_data", request_data)
         return request_data
 
         # Write book flow here

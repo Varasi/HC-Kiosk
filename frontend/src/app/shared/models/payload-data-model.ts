@@ -5,7 +5,7 @@ export interface ITripRequestData {
   passenger_count: number;
   passenger_info: IPassengerInfo;
   additional_passengers: IAdditionalPassengers;
-  // sub_service: string;
+  sub_service: string;
 }
 
 export interface IAdditionalPassengers {

@@ -5,39 +5,35 @@
         <div class="layout-main">
             <p-toast></p-toast>
             <section class="mt-5" *ngIf="!ticketService.initialCheck">
-                <div class="text-center text-7xl font-semibold">Welcome to HIRTA Health Connector</div>
-                <div class="text-center text-5xl mt-3 font-semibold">I need to:</div>
+                <div class="text-center text-7xl font-semibold">{{ 'Welcome to' | translate }} HIRTA Health Connector</div>
+                <div class="text-center text-5xl mt-3 font-semibold">{{'I need to' | translate}}:</div>
                 <div class="text-center">
                     <p-card>
                         <button pButton pRipple type="button" (click)="[onBookTrip(), gaService.gaPageView('book_trip')]" icon="pi pi-car"
                             class="p-button-lg p-button-warning p-button-raised mt-2 mb-4 w-8 h-9rem text-6xl font-semibold">
                             <div id="book-trip-button-text">
-                                Book a trip <br>
-                                (Reservar un viaje)
+                                {{ 'Book a trip' | translate }}
                             </div>
                         </button>
                         <hr>
                         <button pButton pRipple type="button" (click)="[onCheckTrip(), gaService.gaPageView('check_trip')]" icon="pi pi-map-marker"
                             class="p-button-lg p-button-warning p-button-raised mt-4 mb-2 w-8 h-9rem text-6xl font-semibold">
                             <div id="check-trip-button-text">
-                                Check a previously booked trip <br>
-                                (Comprobar un viaje previamente reservado)
+                                {{ 'Check a previously booked trip' | translate }}
                             </div>
                         </button>
                     </p-card>
                     <div class="text-center text-6xl mt-5 font-semibold">
-                        To cancel a ride, please call HIRTA at 1-877-686-0029
+                        {{ 'CancelRideText' | translate }}
                     </div>
                 </div>
                 <div id="terms-div">
                     <hr>
                     <p>
-                        <strong>By using this kiosk, you acknowledge and agree to the following terms:</strong>
+                        <strong>{{ 'TermsAndConditions' | translate }}</strong>
                     </p>
                     <p>
-                        You agree to use this kiosk solely for the purpose of booking trips or 
-                        checking the status of trips exclusively for yourself or for individuals 
-                        who are your approved dependents.
+                        {{ 'TermsAndConditionsText' | translate }}
                     </p>
                 </div>
             </section>

@@ -80,7 +80,7 @@ export class TicketService {
                 address: environment.kiosk_address
             },
             passenger_count: totalPassengers,
-            // sub_service: this.hirta_via_account_name,
+            sub_service: this.hirta_via_account_name,
             passenger_info: {
                 first_name: this.ticketInformation.personalInformation.firstname,
                 last_name: this.ticketInformation.personalInformation.lastname,

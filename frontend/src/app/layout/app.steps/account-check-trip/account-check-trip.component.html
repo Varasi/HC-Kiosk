@@ -3,19 +3,19 @@
         <p-card>
             <ng-template pTemplate="title">
                 <span class="text-5xl">
-                    Rider Information
+                    {{'Rider Information' | translate}}
                 </span>
             </ng-template>
             <ng-template pTemplate="subtitle">
                 <span class="text-3xl mb-0 font-italic font-semibold">
-                    Note: Please enter your personal information
+                    {{'Rider information note' | translate}}
                 </span>
             </ng-template>
 
             <ng-template *ngIf="ticketService.ticketInformation.accountOption.existing" pTemplate="content">
                 <div class="p-fluid">
                     <p-checkbox 
-                    label = "I don't have an email"
+                    label = "{{ 'NOEMAIL' | translate }}"
                     [(ngModel)]="disableEmailInput"
                     [ngModelOptions]="{standalone: true}" 
                     [binary]="true" 
@@ -27,7 +27,7 @@
                             <div class="field grid">
                                 <label htmlFor="firstname"
                                     class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
-                                    First Name
+                                    {{'FIRSTNAME' | translate}}
                                 </label>
                                 <div class="md:col-8 pb-0">
                                     <input #fname1 name="firstName1" #firstname="ngModel" id="firstname" type="text"
@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="col-offset-4 md:col-8 p-0 pl-1">
                                     <span class="p-error" *ngIf="firstname.invalid">
-                                        First Name is required
+                                        {{'FIRSTNAME' | translate}} {{'REQUIRED' | translate}}
                                     </span>
                                 </div>
                             </div>
@@ -49,7 +49,7 @@
                             <div class="field grid">
                                 <label htmlFor="email"
                                     class="mb-2 md:col-2 md:mb-0 text-4xl font-semibold justify-content-end">
-                                    Email
+                                    {{'EMAIL' | translate}}
                                 </label>
                                 <div class="md:col-8 pb-0">
                                     <input name="email" #email="ngModel" id="email" type="text" email="true"
@@ -64,10 +64,10 @@
                                 <div class="col-offset-2 md:col-8 p-0 pl-1">
                                     <span class="p-error"
                                         *ngIf="!ticketService.ticketInformation.personalInformation.email && useEmail">
-                                        Email is required
+                                        {{'EMAIL' | translate}} {{'REQUIRED' | translate}}
                                     </span> <span class="p-error"
                                         *ngIf="ticketService.ticketInformation.personalInformation.email && email.invalid">
-                                        Email is invalid
+                                        {{'EMAIL' | translate}} {{'INVALID' | translate}}
                                     </span>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                             <div class="field grid">
                                 <label htmlFor="lastname"
                                     class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
-                                    Last Name
+                                    {{'LASTNAME' | translate}}
                                 </label>
                                 <div class="md:col-8 pb-0">
                                     <input name="lastName1" #lastname="ngModel" id="lastname" pInputText
@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="col-offset-4 md:col-8 p-0 pl-1">
                                     <span class="p-error" *ngIf="lastname.invalid">
-                                        Last Name is required
+                                        {{'LASTNAME' | translate}} {{'REQUIRED' | translate}}
                                     </span>
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                             <div class="field grid">
                                 <label for="phone"
                                     class="mb-2 md:col-2 md:mb-0 text-4xl font-semibold justify-content-end">
-                                    Phone
+                                    {{'PHONE' | translate}}
                                 </label>
                                 <div class="md:col-8 pb-0">
                                     <input name="phone" #phone="ngModel" id="phone" class="text-5xl" type="text"
@@ -112,10 +112,10 @@
                                 <div class="col-offset-2 md:col-8 p-0 pl-1">
                                     <span class="p-error"
                                         *ngIf="!ticketService.ticketInformation.personalInformation.phone">
-                                        Phone is required
+                                        {{'PHONE' | translate}} {{'REQUIRED' | translate}}
                                     </span> <span class="p-error"
                                         *ngIf="ticketService.ticketInformation.personalInformation.phone && phone.invalid">
-                                        Phone number is invalid (please enter 10 digits)
+                                        {{'INVALID PHONE' | translate}}
                                     </span>
                                 </div>
                             </div>
@@ -203,11 +203,11 @@
                 [draggable]="false"
                 [closable]="false"
                 [style]="{ 'width': '80%', 'font-size': '2.2em' }">
-                    <h1>Are you still there?</h1>
-                    <p>If you're still entering your info please click the button below. Otherwise, your session will end in 60 seconds.</p>
+                    <h1>{{'Are you still there?'| translate}}</h1>
+                    <p>{{'SESSIONINFO'| translate}}</p>
             <div style="text-align: center;">
                 <p-button 
-                    label="I'm still here" 
+                    label="{{'I\'m still here' | translate}}" 
                     (onClick)="toggleDialog()"
                     [style]="{ 'font-size': '0.8em', 'font-weight': 'bold' }">
                 </p-button>

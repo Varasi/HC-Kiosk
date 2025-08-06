@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
 import { AppLayoutService, TicketService, AppAuthService } from '../../core/services';
 import { TimeoutService } from 'src/app/core/services/timeout.service';
 import { TranslateService } from '@ngx-translate/core';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @Component({
     selector: 'app-topbar',
@@ -15,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppTopBarComponent {
     items!: MenuItem[];
     currentLang = 'en';
+    checked = false;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -29,13 +31,13 @@ export class AppTopBarComponent {
         private translate: TranslateService
     ) { 
         translate.addLangs(['en', 'es']);
-        translate.setDefaultLang(this.currentLang);
-        translate.use('es');
+        translate.use(this.currentLang);
     }
 
     toggleLanguage() {
         this.currentLang = this.currentLang === 'en' ? 'es' : 'en';
         this.translate.use(this.currentLang);
+        this.checked = !this.checked;
     }
     toggleDarkMode() {
         this.layoutService.dark = !this.layoutService.dark;
