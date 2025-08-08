@@ -7,6 +7,8 @@ import { AppLayoutService, TicketService } from '../core/services';
 import { Router } from '@angular/router';
 
 import { GoogleAnalyticsService } from 'src/app/core/services/google-analytics.service';
+import { AppSpeechService } from 'src/app/core/services/app.speech.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-layout',
@@ -21,6 +23,7 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
     bookingErrorSubscription: Subscription;
     checkTripCompleteSubscription: Subscription;
     checkTripErrorSubscription: Subscription;
+    languageSubscription: Subscription;
 
     visible: boolean = false;
 
@@ -35,7 +38,9 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
         public ticketService: TicketService,
         public layoutService: AppLayoutService,
         private router: Router,
-        protected gaService: GoogleAnalyticsService
+        protected gaService: GoogleAnalyticsService,
+        private speechService: AppSpeechService,
+        private translate: TranslateService
     ) { }
 
     get containerClass() {
@@ -53,32 +58,75 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.itemsTripBooking = [
-            { label: 'Account', routerLink: 'account-book-trip' },
-            { label: 'Destination', routerLink: 'destination' },
-            { label: 'Pickup', routerLink: 'pickup' }
-        ];
+        console.log('AppLayoutComponent initialized');
+        this.layoutService.changeLanguage('en');
+        console.log('Current language:', this.layoutService.language);
+        if (this.layoutService.language === 'en'){
+            this.itemsTripBooking = [
+                { label: 'Account', routerLink: 'account-book-trip' },
+                { label: 'Destination', routerLink: 'destination' },
+                { label: 'Pickup', routerLink: 'pickup' }
+            ];
 
-        this.itemsTripCheck = [
-            { label: 'Account', routerLink: 'account-check-trip' },
-            { label: 'Pickup', routerLink: 'pickup' }
-        ];
+            this.itemsTripCheck = [
+                { label: 'Account', routerLink: 'account-check-trip' },
+                { label: 'Pickup', routerLink: 'pickup' }
+            ];
+        } else {
+            this.itemsTripBooking = [
+                { label: 'Cuenta', routerLink: 'account-book-trip' },
+                { label: 'Destino', routerLink: 'destination' },
+                { label: 'Recogida', routerLink: 'pickup' }
+            ];
+
+            this.itemsTripCheck = [
+                { label: 'Cuenta', routerLink: 'account-check-trip' },
+                { label: 'Recogida', routerLink: 'pickup' }
+            ];
+        }
+        
+        this.languageSubscription = this.layoutService.languageChange$.subscribe(
+            (language) => {
+                if (language === 'en') {
+                    this.itemsTripBooking = [
+                        { label: 'Account', routerLink: 'account-book-trip' },
+                        { label: 'Destination', routerLink: 'destination' },
+                        { label: 'Pickup', routerLink: 'pickup' }
+                    ];
+
+                    this.itemsTripCheck = [
+                        { label: 'Account', routerLink: 'account-check-trip' },
+                        { label: 'Pickup', routerLink: 'pickup' }
+                    ];
+                } else {
+                    this.itemsTripBooking = [
+                        { label: 'Cuenta', routerLink: 'account-book-trip' },
+                        { label: 'Destino', routerLink: 'destination' },
+                        { label: 'Recogida', routerLink: 'pickup' }
+                    ];
+
+                    this.itemsTripCheck = [
+                        { label: 'Cuenta', routerLink: 'account-check-trip' },
+                        { label: 'Recogida', routerLink: 'pickup' }
+                    ];
+                }
+            });
 
         this.bookingCompleteSubscription = this.ticketService.bookingComplete$.subscribe(
             (personalInformation) => {
                 if (!personalInformation['estimatedTime'] || personalInformation['estimatedTime'] === 'n/a') {
                     if (this.layoutService.audio) {
-                        window.speechSynthesis.speak(new SpeechSynthesisUtterance('Trip booked'));
+                        this.speechService.speak(this.translate.instant('Trip booked'));
                     }
                 } else {
                     if (this.layoutService.audio) {
-                        window.speechSynthesis.speak(new SpeechSynthesisUtterance('Trip booked. Estimated time of pickup: ' + personalInformation['estimatedTime']));
+                        this.speechService.speak(this.translate.instant('Trip booked')+'.'+this.translate.instant('Estimated time of pickup')+': '+ personalInformation['estimatedTime']);
                     }
                 }
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Order submitted',
-                    detail: 'Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your order is completed.',
+                    summary: this.translate.instant('Order submitted'),
+                    detail: this.translate.instant('Dear')+' ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' '+this.translate.instant('your order is completed.'),
                     life: 10000
                 });
             });
@@ -86,11 +134,11 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
         this.bookingErrorSubscription = this.ticketService.bookingError$.subscribe(
             (errorInfo) => {
                 if (this.layoutService.audio)
-                    window.speechSynthesis.speak(new SpeechSynthesisUtterance('Failed to book the trip: ' + errorInfo));
+                    this.speechService.speak(this.translate.instant('Failed to book the trip')+': ' + errorInfo);
 
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Failed to book the trip',
+                    summary: this.translate.instant('Failed to book the trip'),
                     detail: errorInfo,
                     life: 10000
                 });
@@ -100,16 +148,16 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
             (personalInformation) => {
                 if (!personalInformation['estimatedTime'] || personalInformation['estimatedTime'] === 'n/a') {
                     if (this.layoutService.audio)
-                        window.speechSynthesis.speak(new SpeechSynthesisUtterance('Trip successfully checked'));
+                        this.speechService.speak(this.translate.instant('Trip successfully checked'));
                 } else {
                     if (this.layoutService.audio)
-                        window.speechSynthesis.speak(new SpeechSynthesisUtterance('Trip successfully checked. Estimated time of pickup: ' + personalInformation['estimatedTime']));
+                        this.speechService.speak(this.translate.instant('Trip successfully checked')+'. ' + this.translate.instant('Estimated time of pickup')+': ' + personalInformation['estimatedTime']);
                 }
 
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Trip checked',
-                    detail: 'Dear ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your trip is checked.',
+                    summary: this.translate.instant('Trip checked'),
+                    detail: this.translate.instant('Dear')+' ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' '+this.translate.instant('your trip is checked.'),
                     life: 10000
                 });
             });
@@ -117,11 +165,11 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
         this.checkTripErrorSubscription = this.ticketService.tripCheckError$.subscribe(
             (errorInfo) => {
                 if (this.layoutService.audio)
-                    window.speechSynthesis.speak(new SpeechSynthesisUtterance('Check trip error: ' + errorInfo));
+                    this.speechService.speak(this.translate.instant('Check trip error')+': ' + errorInfo);
 
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Check Trip Error',
+                    summary: this.translate.instant('Check Trip Error'),
                     detail: errorInfo,
                     life: 10000
                 });
@@ -141,6 +189,9 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
         if (this.checkTripErrorSubscription) {
             this.checkTripErrorSubscription.unsubscribe();
         }
+        if (this.languageSubscription) {
+            this.languageSubscription.unsubscribe();
+        }
     }
 
     onBookTrip() {
@@ -149,7 +200,7 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
         this.ticketService.reset();
 
         if (this.layoutService.audio)
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance('Book a trip'));
+            this.speechService.speak(this.translate.instant('Book a trip'));
 
         this.router.navigate(['/account-book-trip']);
     }
@@ -160,7 +211,7 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
         this.ticketService.reset();
 
         if (this.layoutService.audio)
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance('Check a previously booked trip'));
+            this.speechService.speak(this.translate.instant('Check a previously booked trip'));
         
         this.router.navigate(['/account-check-trip']);
     }

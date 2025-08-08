@@ -125,14 +125,14 @@
 
         <ng-template pTemplate="footer">
             <div class="grid grid-nogutter justify-content-between">
-                <button pButton pRipple label="Back" (click)="[prevPage(), gaService.gaPageView('book_trip')]" icon="pi pi-angle-left"
+                <button pButton pRipple label="{{ 'Back' | translate }}" (click)="[prevPage(), gaService.gaPageView('book_trip')]" icon="pi pi-angle-left"
                     class="p-button-lg p-button-raised h-5rem text-4xl font-semibold" [disabled]="booking">
                 </button>
-                <button pButton pRipple label="Next" *ngIf="!booking" (click)="[destComplete(), gaService.gaPageView('pickup')]" icon="pi pi-angle-right"
+                <button pButton pRipple label="{{ 'Next' | translate}}" *ngIf="!booking" (click)="[destComplete(), gaService.gaPageView('pickup')]" icon="pi pi-angle-right"
                     iconPos="right" class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
                     [disabled]="!ticketService.ticketInformation.destination.address_text">
                 </button>
-                <button pButton pRipple label="Next" *ngIf="booking" icon="pi pi-spin pi-spinner"
+                <button pButton pRipple label="{{ 'Next' | translate}}" *ngIf="booking" icon="pi pi-spin pi-spinner"
                     iconPos="right" class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
                     [disabled]="true">
                 </button>

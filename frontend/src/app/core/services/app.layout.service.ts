@@ -40,6 +40,7 @@ interface LayoutState {
 export class AppLayoutService {
     dark = true;
     audio = true;
+    language = 'en';
     themeChanged = new Subject<string>();
 
     config: AppConfig = {
@@ -73,16 +74,24 @@ export class AppLayoutService {
     private overlayOpen = new Subject<any>();
     private topbarMenuOpen = new Subject<any>();
     private menuProfileOpen = new Subject<any>();
+    private languageChange = new Subject<string>();
 
     configUpdate$ = this.configUpdate.asObservable();
     overlayOpen$ = this.overlayOpen.asObservable();
     topbarMenuOpen$ = this.topbarMenuOpen.asObservable();
     menuProfileOpen$ = this.menuProfileOpen.asObservable();
+    languageChange$ = this.languageChange.asObservable();
 
     constructor(private _ngZone: NgZone, @Inject(DOCUMENT) private _document: any) { }
 
     onConfigUpdate() {
         this.configUpdate.next(this.config);
+    }
+
+    changeLanguage(language: string) {
+        this.language = language;
+        this.languageChange.next(language);
+        // localStorage.setItem(LocalStorageItems.language, language);
     }
 
     changeAudio(audio: boolean) {

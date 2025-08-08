@@ -216,14 +216,14 @@
 
             <ng-template pTemplate="footer">
                 <div class="grid grid-nogutter justify-content-between">
-                    <button pButton pRipple label="Back" (click)="[prevPage(), gaService.gaPageView('HIRTA Kiosk')]" icon="pi pi-angle-left"
+                    <button pButton pRipple label="{{ 'Back' | translate }}" (click)="[prevPage(), gaService.gaPageView('HIRTA Kiosk')]" icon="pi pi-angle-left"
                         class="p-button-lg p-button-raised h-5rem text-4xl font-semibold" [disabled]="checking">
                     </button>
-                    <button pButton pRipple label="Next" *ngIf="!checking" (click)="[nextPage(), gaService.gaPageView('pickup')]" icon="pi pi-angle-right" iconPos="right"
+                    <button pButton pRipple label="{{ 'Next' | translate}}" *ngIf="!checking" (click)="[nextPage(), gaService.gaPageView('pickup')]" icon="pi pi-angle-right" iconPos="right"
                         class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
                         [disabled]="!actForm.valid">
                     </button>
-                    <button pButton pRipple label="Next" *ngIf="checking" icon="pi pi-spin pi-spinner" iconPos="right"
+                    <button pButton pRipple label="{{ 'Next' | translate}}" *ngIf="checking" icon="pi pi-spin pi-spinner" iconPos="right"
                         class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
                         [disabled]="true">
                     </button>

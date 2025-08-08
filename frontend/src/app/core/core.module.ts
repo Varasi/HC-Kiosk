@@ -12,6 +12,7 @@ import {
   AppInterceptorService,
   AppNotificationService
 } from './services';
+import { AppSpeechService } from './services/app.speech.service';
 
 @NgModule({
   imports: [

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { ITripDetails, ITripRequestData, ITripResponse, ITripInfo, ITripResponseDetails } from 'src/app/shared/models';
+import { AppLayoutService } from './app.layout.service';
 
 @Injectable()
 export class TicketService {
-    ticketInformation: ITripInfo = {
+        ticketInformation: ITripInfo = {
         accountOption: {
             existing: true
         },
@@ -24,13 +25,38 @@ export class TicketService {
             address: '',
             notes: ''
         },
-        passengers: [
+        passengers:[
             { type: 'Guest', total: 0, max: 2 },
             { type: 'Guest (WAV)', total: 0, max: 1 },
             { type: 'PCA', total: 0, max: 1 },
             { type: 'PCA (WAV)', total: 0, max: 1 }
         ]
     };
+    private languageSubscription: Subscription;
+
+    constructor(
+        private layoutService: AppLayoutService
+    ) {
+        this.languageSubscription = this.layoutService.languageChange$.subscribe((Language) =>
+        {
+            if (Language === 'es') {
+                this.ticketInformation.passengers = [
+                    { type: 'Invitado', total: 0, max: 2 },
+                    { type: 'Invitado (WAV)', total: 0, max: 1 },
+                    { type: 'PCA', total: 0, max: 1 },
+                    { type: 'PCA (WAV)', total: 0, max: 1 }
+                ];
+            } else {
+                this.ticketInformation.passengers = [
+                    { type: 'Guest', total: 0, max: 2 },
+                    { type: 'Guest (WAV)', total: 0, max: 1 },
+                    { type: 'PCA', total: 0, max: 1 },
+                    { type: 'PCA (WAV)', total: 0, max: 1 }
+                ];
+            }
+        }
+        )
+    }
 
     tripResponse: ITripResponseDetails;
     tripDetails: ITripDetails;
@@ -132,12 +158,19 @@ export class TicketService {
                 address: '',
                 notes: ''
             },
-            passengers: [
-                { type: 'Guest', total: 0, max: 2 },
-                { type: 'Guest (WAV)', total: 0, max: 1 },
-                { type: 'PCA', total: 0, max: 1 },
-                { type: 'PCA (WAV)', total: 0, max: 1 }
-            ]
+            passengers: this.layoutService.language === 'es' ?
+                [
+                    { type: 'Invitado', total: 0, max: 2 },
+                    { type: 'Invitado (WAV)', total: 0, max: 1 },
+                    { type: 'PCA', total: 0, max: 1 },
+                    { type: 'PCA (WAV)', total: 0, max: 1 }
+                ] : 
+                [
+                    { type: 'Guest', total: 0, max: 2 },
+                    { type: 'Guest (WAV)', total: 0, max: 1 },
+                    { type: 'PCA', total: 0, max: 1 },
+                    { type: 'PCA (WAV)', total: 0, max: 1 }
+                ]
         };
     }
 
@@ -172,5 +205,10 @@ export class TicketService {
             return `${minutes} ${minutesInfo}`;
 
         return 'n/a';
+    }
+    ngOnDestroy() {
+        if (this.languageSubscription) {
+            this.languageSubscription.unsubscribe();
+        }
     }
 }

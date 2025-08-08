@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { AppDataService, TicketService, AppAuthService } from 'src/app/core/services';
 import { GoogleAnalyticsService } from 'src/app/core/services/google-analytics.service';
 import { TimeoutService } from 'src/app/core/services/timeout.service';
-
+import { TranslateService } from '@ngx-translate/core';
 
 declare var google: any;
 
@@ -32,7 +32,8 @@ export class DestinationComponent implements OnInit {
     private authService: AppAuthService,
     private router: Router,
     public timeoutService: TimeoutService,
-    protected gaService: GoogleAnalyticsService 
+    protected gaService: GoogleAnalyticsService,
+    private translate: TranslateService
   ) { }
 
   ngAfterViewInit() {
@@ -97,16 +98,16 @@ export class DestinationComponent implements OnInit {
             if (errorInfo.info) {
               console.log("error while booking trip:",JSON.stringify(errorInfo));
               if (errorInfo.message === 'NoSuchRiderError'){
-                this.ticketService.destinationError(`You are not currently enrolled in Health Connector service. Please call (877) 686-0029 or see the front desk to register.`);
+                this.ticketService.destinationError(this.translate.instant(`You are not currently enrolled in Health Connector service. Please call (877) 686-0029 or see the front desk to register.`));
               } else if(errorInfo.message === 'DestinationOutOfZone') {
-                this.ticketService.destinationError(`Destination out of service area.`);
+                this.ticketService.destinationError(this.translate.instant(`Destination out of service area.`));
               } else {
                 this.ticketService.destinationError(errorInfo.info);
               }
             } else if (errorInfo.message.includes('DoubleBooking')) {
-              this.ticketService.destinationError(`You've already scheduled a trip. Go to 'Check a previously booked trip' to see where your ride is.`);
+              this.ticketService.destinationError(this.translate.instant(`You've already scheduled a trip. Go to 'Check a previously booked trip' to see where your ride is.`));
             } else {
-              this.ticketService.destinationError('Error booking the trip! Please try again later!');
+              this.ticketService.destinationError(this.translate.instant('Error booking the trip! Please try again later!'));
             }
           } else {
             const trip_id = trip_data.trip_id;
@@ -118,23 +119,23 @@ export class DestinationComponent implements OnInit {
                   let errorInfo = JSON.parse(trip_data_details[0].replace('MOD/ATMS Error:', ''));
                   if (errorInfo.info) {
                     if (errorInfo.message === 'NoSuchRiderError'){
-                      this.ticketService.destinationError(`You are not currently enrolled in Health Connector service. Please call (877) 686-0029 or see the front desk to register.`);
+                      this.ticketService.destinationError(this.translate.instant(`You are not currently enrolled in Health Connector service. Please call (877) 686-0029 or see the front desk to register.`));
                     } else if(errorInfo.message === 'DestinationOutOfZone') {
-                      this.ticketService.destinationError(`Destination out of service area.`);
+                      this.ticketService.destinationError(this.translate.instant(`Destination out of service area.`));
                     } else {
                       this.ticketService.destinationError(errorInfo.info);
                     }
                   } else if (errorInfo.message.includes('DoubleBooking')) {
-                    this.ticketService.destinationError(`You've already scheduled a trip. Go to 'Check a previously booked trip' to see where your ride is.`);
+                    this.ticketService.destinationError(this.translate.instant(`You've already scheduled a trip. Go to 'Check a previously booked trip' to see where your ride is.`));
                   } else {
-                    this.ticketService.destinationError('Error booking the trip! Please try again later!');
+                    this.ticketService.destinationError(this.translate.instant('Error booking the trip! Please try again later!'));
                   }
                 } else {
                   this.ticketService.destinationComplete(trip_data_details.trip_details); 
                   this.router.navigate(['pickup']);
                 }
               }, error: () => {
-                this.ticketService.destinationError('Error booking the trip - communication error!');
+                this.ticketService.destinationError(this.translate.instant('Error booking the trip - communication error!'));
               }
             });
           }
@@ -142,7 +143,7 @@ export class DestinationComponent implements OnInit {
             
           }, error: () => {
             this.booking = false;
-            this.ticketService.destinationError('Error booking the trip! Please try again later!');
+            this.ticketService.destinationError(this.translate.instant('Error booking the trip! Please try again later!'));
           }
         });
       }else{

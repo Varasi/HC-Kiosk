@@ -7,6 +7,7 @@ import { AppLayoutService, TicketService, AppAuthService } from '../../core/serv
 import { TimeoutService } from 'src/app/core/services/timeout.service';
 import { TranslateService } from '@ngx-translate/core';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { AppSpeechService } from 'src/app/core/services/app.speech.service';
 
 @Component({
     selector: 'app-topbar',
@@ -16,7 +17,6 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 export class AppTopBarComponent {
     items!: MenuItem[];
     currentLang = 'en';
-    checked = false;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -28,28 +28,47 @@ export class AppTopBarComponent {
         public authService: AppAuthService,
         private router: Router,
         public timeoutService: TimeoutService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private speechService: AppSpeechService
     ) { 
         translate.addLangs(['en', 'es']);
         translate.use(this.currentLang);
+        // this.currentLang = this.layoutService.language;
     }
-
+    
     toggleLanguage() {
-        this.currentLang = this.currentLang === 'en' ? 'es' : 'en';
-        this.translate.use(this.currentLang);
-        this.checked = !this.checked;
+        // this.currentLang = this.currentLang === 'en' ? 'es' : 'en';
+        // this.layoutService.changeLanguage(this.currentLang);
+        // this.translate.use(this.layoutService.language);
+        if (this.layoutService.language === 'es') {
+            this.layoutService.changeLanguage('en');
+            this.translate.use(this.layoutService.language);
+            if (this.layoutService.audio){
+                this.speechService.speak('Language set to English');
+            }
+            
+        }else{
+            this.layoutService.changeLanguage('es');
+            this.translate.use(this.layoutService.language);
+            if (this.layoutService.audio){
+                this.speechService.speak('Idioma establecido en español');
+            }
+            
+        }
     }
     toggleDarkMode() {
         this.layoutService.dark = !this.layoutService.dark;
 
         if (this.layoutService.dark) {
             this.layoutService.changeTheme('dark');
-            if (this.layoutService.audio)
-                window.speechSynthesis.speak(new SpeechSynthesisUtterance('Switching to dark mode'));
+            if (this.layoutService.audio){
+                this.speechService.speak(this.translate.instant('Switching to dark mode'));
+            }
         } else {
             this.layoutService.changeTheme('light');
-            if (this.layoutService.audio)
-                window.speechSynthesis.speak(new SpeechSynthesisUtterance('Switching to light mode'));
+            if (this.layoutService.audio){
+                this.speechService.speak(this.translate.instant('Switching to light mode'));
+            }
         }
     }
 
@@ -58,9 +77,9 @@ export class AppTopBarComponent {
         this.layoutService.changeAudio(this.layoutService.audio);
 
         if (this.layoutService.audio) {
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance('Switching audio on'));
+            this.speechService.speak(this.translate.instant('Switching audio on'));
         } else {
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance('Switching audio off'));
+            this.speechService.speak(this.translate.instant('Switching audio off'));
         }
     }
 
@@ -69,7 +88,7 @@ export class AppTopBarComponent {
         this.timeoutService.clearAllTimers();
 
         if(this.layoutService.audio) {
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance('Starting over'));
+            this.speechService.speak(this.translate.instant('Starting over'));
         }
 
         this.ticketService.bookTrip = true;

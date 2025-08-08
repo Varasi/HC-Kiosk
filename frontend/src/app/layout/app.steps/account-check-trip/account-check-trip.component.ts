@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 
 import { GoogleAnalyticsService } from 'src/app/core/services/google-analytics.service';
 import { TimeoutService } from 'src/app/core/services/timeout.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-check-trip',
@@ -34,6 +35,7 @@ export class AccountCheckTripComponent implements OnInit {
     private router: Router,
     protected gaService: GoogleAnalyticsService,
     public timeoutService: TimeoutService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -84,12 +86,20 @@ export class AccountCheckTripComponent implements OnInit {
               let errorData: IErrorResponse;
               try {
                 errorData = JSON.parse(errorInfo);
+                console.log("errorData:", errorData);
                 if(errorData.message === 'FailedToGetOrCreateRider')
-                  this.ticketService.checkError('Failed to get the rider - please check your personal information and try again!');
+                  this.ticketService.checkError(this.translate.instant('Failed to get the rider - please check your personal information and try again!'));
                 else
+                  console.error('Error parsing error data:', errorData);
                   this.ticketService.checkError(errorData.message);
               } catch (e) {
-                this.ticketService.checkError(errorInfo);
+                if(errorInfo.includes('No upcoming trips')){
+                  this.ticketService.checkError(this.translate.instant('No upcoming trips.'));
+                }else{
+                  console.error('Error parsing error info:', errorInfo);
+                  this.ticketService.checkError(errorInfo);
+                }
+
               }
             }
             this.checking = false;
@@ -97,7 +107,7 @@ export class AccountCheckTripComponent implements OnInit {
           error: (error) => {
             console.error(error);
             this.checking = false;
-            this.ticketService.checkError('Error checking the trip! Please try again later!');
+            this.ticketService.checkError(this.translate.instant('Error checking the trip! Please try again later!'));
           },
           complete: () => {
             console.log('check complete');

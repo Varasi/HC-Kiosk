@@ -150,10 +150,10 @@
 
             <ng-template pTemplate="footer">
                 <div class="grid grid-nogutter justify-content-between">
-                    <button pButton pRipple label="Back" (click)="[prevPage(), gaService.gaPageView('HIRTA Kiosk')]" icon="pi pi-angle-left"
+                    <button pButton pRipple label="{{ 'Back' | translate }}" (click)="[prevPage(), gaService.gaPageView('HIRTA Kiosk')]" icon="pi pi-angle-left"
                         class="p-button-lg p-button-raised h-5rem text-4xl font-semibold">
                     </button>
-                    <button pButton pRipple label="Next" (click)="[nextPage(), gaService.gaPageView('destination')]" icon="pi pi-angle-right" iconPos="right"
+                    <button pButton pRipple label="{{ 'Next' | translate}}" (click)="[nextPage(), gaService.gaPageView('destination')]" icon="pi pi-angle-right" iconPos="right"
                         class="p-button-lg p-button-raised h-5rem text-4xl font-semibold" [disabled]="!abtForm.valid">
                     </button>
                 </div>

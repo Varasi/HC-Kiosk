@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
 import { GoogleAnalyticsService } from 'src/app/core/services/google-analytics.service';
+import { AppSpeechService } from 'src/app/core/services/app.speech.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 import { 
@@ -38,7 +40,9 @@ export class PickupComponent {
     public ticketService: TicketService,
     private router: Router,
     protected gaService: GoogleAnalyticsService,
-    public timeoutService: TimeoutService
+    public timeoutService: TimeoutService,
+    private speechService: AppSpeechService,
+    private translate: TranslateService
   ) {
     if (!this.ticketService.bookTrip) {
       this.tripDetails = ticketService.tripDetails;
@@ -65,7 +69,7 @@ export class PickupComponent {
     this.timeoutService.clearAllTimers();
 
     if (this.layoutService.audio)
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance('Thank you for booking your trip with us. Have a great day!'));
+      this.speechService.speak(this.translate.instant('Thank you for booking your trip with us. Have a great day!'));
 
     this.ticketService.bookTrip = true;
     this.ticketService.initialCheck = false;
