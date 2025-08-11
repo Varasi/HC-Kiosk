@@ -1,0 +1,45 @@
+1. Clone the Github repository.
+2. Open the project in your IDE.
+3. Make sure you have Node.js and npm installed.
+4. Navigate to the project directory in your terminal.
+5. Create a virtual environemnt by running:
+    - On Windows:
+        `python -m venv .venv`
+6. Activate the virtual environment:
+    - On Windows:
+        `.venv\Scripts\activate.bat`
+
+7. Install the required packages:
+    - On Windows:
+        `pip install -r requirements.txt`
+8. Replace the AWS Account ID, Region in the app.py 
+9. Set the AWS credentials using the AWS CLI:
+    - Run `aws configure` and enter your AWS Access Key ID, Secret Access Key, region, and output format.
+10. Navigate to the frontend directory:
+    - `cd frontend`
+11. Install the frontend dependencies:
+    - Run `npm install` to install the required Node.js packages.
+    - Run `npm install -g @angular/cli` to install Angular CLI globally.
+12. We need docker to run in our local environment.
+    - Make sure Docker is installed and running on your machine.
+13. Store the secret manager credentials in the AWS Secrets Manager.
+    - Create the below secrets with the required configuration details.
+    - the secrets are:
+        - `via_auth_url`
+        - `via_client_id`
+        - `via_client_secret`
+        - `via_api_key`
+        - `via_api_url`
+    - The name of the secrets should be <env>_credentials. here env can be prod, dev, or test. The env should match the variable in app.py
+14. create an empty folder 'website' in the root directory of the project if does not exist.
+15. Deploy the backend:
+    - Run `cdk bootstrap` to set up the CDK environment.
+    - Run `cdk deploy` to deploy the backend resources.
+16. After the deployment is complete, you will see the API Gateway URL in the terminal. Also obtain other credentials like the Cognito User Pool ID, Client ID...etc which are required in the environment.txt file for the frontend.
+17. Create a file named `environment.txt` in the `frontend/src/environments` directory and add the the credentials similar to environemnt_samples.txt file.
+18. Create a user in the userpool using the AWS console or AWS CLI. After creating a user his status would be 'force change password'. You can use the below command to change the password.
+    - `aws cognito-idp admin-set-user-password --user-pool-id <user_pool_id> --username <username> --password <new_password> --permanent`
+19. Run the script to build and move the files to the website folder:
+    - `.\move-dist.bat`
+20. Deploy the stack again to update the S3 bucket with the new files:
+    - Run `cdk deploy` again.
