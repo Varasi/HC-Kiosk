@@ -228,9 +228,9 @@ class ViaConnection:
             self.set_rider_info(payload=payload)
 
         # if they are qualified, use the Health Connector sub_service.
-        # payload['sub_service'] = 'Health_Connector' if self._rider_hc else 'NEMT'
+        payload['sub_service'] = 'Health_Connector' if self._rider_hc else 'NEMT'
         # payload['sub_service'] = 'nemt' if self._rider_hc else ''
-        payload['sub_service'] = 'NEMT'
+        # payload['sub_service'] = 'NEMT'
         print("payload:",payload)
         # Request Trip Flow
         r_request = self._oauth.post(f'https://{self._secret['via_api_url']}/trips/request', json=payload)
