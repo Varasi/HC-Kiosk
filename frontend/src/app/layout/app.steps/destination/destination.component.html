@@ -1,0 +1,142 @@
+<div class="steps-content">
+    <p-card>
+        <ng-template pTemplate="title">
+            <span class="text-5xl">
+                {{'Where would you like to go?' | translate}}
+            </span>
+            <span class="ml-8 p-2 bg-blue-100" style="border: solid 1px var(--blue-100); color: #1f2d40;">
+                <label class="text-4xl font-semibold w-2"><i class="pi pi-map-marker mr-2 text-4xl"></i>{{'Origin:' | translate}} </label>
+                <label class="text-4xl font-semibold">{{trip_origin}}</label>
+            </span>
+        </ng-template>
+        <ng-template pTemplate="subtitle">
+            <span class="text-3xl mb-0 font-italic font-semibold">
+                {{ 'destnination note' | translate }}
+            </span>
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="grid">
+                <div class="col-7" style="padding-top: 0 !important;">
+                    <div class="p-fluid">
+                        <div class="field mb-1">
+                            <div class="pac-card" id="pac-card">
+                                <div id="pac-container">
+                                    <input type="text" placeholder="{{'Destination address or location...' | translate}}" pInputText
+                                        class="text-4xl" ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                                        [(ngModel)]="ticketService.ticketInformation.destination.address_text" id="pac-input"
+                                        #destination #destinationKeyboard="ngxTouchKeyboard" required maxlength="256"
+                                        (focus)="destinationKeyboard.openPanel()"
+                                        (blur)="destinationKeyboard.closePanel()">
+                                </div>
+                            </div>
+                            <div>
+                                <span class="p-error" *ngIf="!ticketService.ticketInformation.destination.address_text">
+                                    {{'Destination' | translate}} {{'REQUIRED' | translate}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="grid">
+                        <span class="text-2xl mt-5 ml-2 mb-0 font-italic font-semibold text-orange-500">
+                            <i class="pi pi-info-circle" style="font-size: 1rem !important;"></i>
+                            Please start typing and select one of the suggested destinations
+                        </span>
+                    </div> -->
+                    <div class="p-fluid" style="margin-top: 2.5rem !important;">
+                        <div class="field mb-0">
+                            <div class="notes-card" id="notes-card">
+                                <label class="mb-1 ml-1 text-3xl font-semibold">
+                                    {{'Notes for Driver' | translate}}
+                                </label>
+                                <textarea rows="2" cols="30" pInputTextarea 
+                                    placeholder="{{'additonal instruction for driver' | translate}}" 
+                                    class="text-3xl" style="resize: none !important;"
+                                    ngxTouchKeyboard ngxTouchKeyboardFullScreen 
+                                    [(ngModel)]="ticketService.ticketInformation.destination.notes"
+                                    id="notes-input" #notes #notesKeyboard="ngxTouchKeyboard" required maxlength="445"
+                                    (focus)="notesKeyboard.openPanel()" (blur)="notesKeyboard.closePanel()">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5 pl-8">
+                    <div class="p-fluid pl-2" style="margin-top: -3.5rem !important;">
+                        <div class="field mb-0">
+                            <div class="grid">
+                                <span class="text-xl mt-0 ml-3 mb-0 font-italic font-semibold">
+                                    <i class="pi pi-info-circle" style="font-size: 1rem !important;"></i>
+                                    {{'PCA is a Personal Care Assistant or Aide' | translate}}
+                                </span>
+                            </div>
+                            <div class="grid">
+                                <span class="text-xl mt-2 ml-3 mb-0 font-italic font-semibold">
+                                    <i class="pi pi-info-circle" style="font-size: 1rem !important;"></i>
+                                    {{'WAV is a Wheelchair Accessible Vehicle' | translate}}
+                                </span>
+                            </div>
+                            <p-table [value]="ticketService.ticketInformation.passengers">
+                                <ng-template pTemplate="body" let-passenger>
+                                    <tr class="text-4xl font-semibold">
+                                        <td style="width: 12rem; padding-bottom: 20px !important; padding-top: 20px !important;">
+                                            {{ passenger.type }}
+                                        </td>
+                                        <td>
+                                            <button type="button" pRipple pButton
+                                                (click)="passenger.total = passenger.total - 1"
+                                                style="width: 7rem !important;" [disabled]="passenger.total === 0"
+                                                severity="secondary">
+                                                <i class="pi pi-minus font-semibold"></i>
+                                            </button>
+                                            <span class="px-3">{{ passenger.total }}</span>
+                                            <button type="button" pRipple pButton
+                                                (click)="passenger.total = passenger.total + 1"
+                                                style="width: 7rem !important;"
+                                                [disabled]="passenger.total === passenger.max" severity="secondary">
+                                                <i class="pi pi-plus font-semibold"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <!-- timeout dialog box -->
+        <p-dialog 
+            [modal]="true" 
+            [(visible)]="timeoutDialogVisible" 
+            [draggable]="false"
+            [closable]="false"
+            [style]="{ 'width': '80%', 'font-size': '2.2em' }">
+                <h1>{{'Are you still there?' | translate}}</h1>
+                <p>{{'SESSIONINFO' | translate}}</p>
+        <div style="text-align: center;">
+            <p-button 
+                label="{{'I\'m still here' | translate}}" 
+                (onClick)="toggleDialog()"
+                [style]="{ 'font-size': '0.8em', 'font-weight': 'bold' }">
+            </p-button>
+        </div>
+        </p-dialog>
+
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-between">
+                <button pButton pRipple label="{{ 'Back' | translate }}" (click)="[prevPage(), gaService.gaPageView('book_trip')]" icon="pi pi-angle-left"
+                    class="p-button-lg p-button-raised h-5rem text-4xl font-semibold" [disabled]="booking">
+                </button>
+                <button pButton pRipple label="{{ 'Next' | translate}}" *ngIf="!booking" (click)="[destComplete(), gaService.gaPageView('pickup')]" icon="pi pi-angle-right"
+                    iconPos="right" class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
+                    [disabled]="!ticketService.ticketInformation.destination.address_text">
+                </button>
+                <button pButton pRipple label="{{ 'Next' | translate}}" *ngIf="booking" icon="pi pi-spin pi-spinner"
+                    iconPos="right" class="p-button-lg p-button-raised h-5rem text-4xl font-semibold"
+                    [disabled]="true">
+                </button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>

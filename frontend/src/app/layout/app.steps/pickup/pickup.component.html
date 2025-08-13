@@ -1,0 +1,71 @@
+<div class="steps-content">
+    <p-card>
+        <ng-template pTemplate="title">
+            <span class="text-5xl mr-2">Pickup at:</span>
+            <span class="text-5xl" *ngIf="pickupAddress">{{pickupAddress.description}}</span>
+        </ng-template>
+        <ng-template pTemplate="subtitle">
+            <span class="text-3xl mb-0 font-italic font-semibold">
+                {{'Note: Please make a note of this information'| translate}}
+            </span>
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="p-fluid formgrid grid">
+                <div class="field col-6">
+                    <div class="relative bg-primary-100 border-round p-2">
+                        <div class="static bg-blue-100 border-round p-0 h-12rem">
+                            <p class="text-center text-7xl text-gray-900">
+                                <span>{{'Your estimated pickup' | translate}</span><br>
+                                <span class="font-semibold">{{estimatedTime}}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field col-6" *ngIf="vehicleInfo || driverInfo">
+                    <div class="relative bg-primary-100 border-round p-2">
+                        <div class="static bg-green-100 border-round pt- h-12rem">
+                            <p class="text-left pl-5 text-5xl text-gray-900">
+                                <span *ngIf="vehicleInfo">{{'HIRTA On Demand vehicle'| translate}}</span><br>
+                                <span *ngIf="vehicleInfo" class="font-semibold">{{vehicleInfo.color}}
+                                    {{vehicleInfo.make}} {{vehicleInfo.model}}</span><br>
+                                <span class="font-semibold">Licence plate:
+                                    {{vehicleInfo.license_plate}}</span>
+                                <span *ngIf="driverInfo" class="font-semibold">&nbsp;Driver:
+                                    {{driverInfo.first_name}} {{driverInfo.last_name}}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <!-- timeout dialog box -->
+        <p-dialog 
+            [modal]="true" 
+            [(visible)]="timeoutDialogVisible" 
+            [draggable]="false"
+            [closable]="false"
+            [style]="{ 'width': '80%', 'font-size': '2.2em' }">
+                <h1>{{'Are you still there?'| translate}}</h1>
+                <p>{{'SESSIONINFO'| translate}}</p>
+        <div style="text-align: center;">
+            <p-button 
+                label="{{'I\'m still here' | translate}}" 
+                (onClick)="toggleDialog()"
+                [style]="{ 'font-size': '0.8em', 'font-weight': 'bold' }">
+            </p-button>
+        </div>
+        </p-dialog>
+
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-between">
+                <button pButton pRipple label="{{ 'Back' | translate }}" (click)="[prevPage(), gaService.gaPageView('destination')]" icon="pi pi-angle-left"
+                    class="p-button-lg p-button-raised h-5rem text-4xl font-semibold">
+                </button>
+                <button pButton pRipple label="{{'Done' | translate}}" (click)="[done(), gaService.gaPageView('HIRTA Kiosk')]" icon="pi pi-angle-right" iconPos="right"
+                    class="p-button-lg p-button-raised h-5rem text-4xl font-semibold">
+                </button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>

@@ -1,0 +1,52 @@
+<div class="layout-wrapper" [ngClass]="containerClass">
+    <app-topbar></app-topbar>
+    <div class="layout-sidebar"></div>
+    <div class="layout-main-container c-layout-content">
+        <div class="layout-main">
+            <p-toast></p-toast>
+            <section class="mt-5" *ngIf="!ticketService.initialCheck">
+                <div class="text-center text-7xl font-semibold">{{ 'Welcome to' | translate }} HIRTA Health Connector</div>
+                <div class="text-center text-5xl mt-3 font-semibold">{{'I need to' | translate}}:</div>
+                <div class="text-center">
+                    <p-card>
+                        <button pButton pRipple type="button" (click)="[onBookTrip(), gaService.gaPageView('book_trip')]" icon="pi pi-car"
+                            class="p-button-lg p-button-warning p-button-raised mt-2 mb-4 w-8 h-9rem text-6xl font-semibold">
+                            <div id="book-trip-button-text">
+                                {{ 'Book a trip' | translate }}
+                            </div>
+                        </button>
+                        <hr>
+                        <button pButton pRipple type="button" (click)="[onCheckTrip(), gaService.gaPageView('check_trip')]" icon="pi pi-map-marker"
+                            class="p-button-lg p-button-warning p-button-raised mt-4 mb-2 w-8 h-9rem text-6xl font-semibold">
+                            <div id="check-trip-button-text">
+                                {{ 'Check a previously booked trip' | translate }}
+                            </div>
+                        </button>
+                    </p-card>
+                    <div class="text-center text-6xl mt-5 font-semibold">
+                        {{ 'CancelRideText' | translate }}
+                    </div>
+                </div>
+                <div id="terms-div">
+                    <hr>
+                    <p>
+                        <strong>{{ 'TermsAndConditions' | translate }}</strong>
+                    </p>
+                    <p>
+                        {{ 'TermsAndConditionsText' | translate }}
+                    </p>
+                </div>
+            </section>
+            <section *ngIf="ticketService.initialCheck">
+                <div class="card" *ngIf="ticketService.bookTrip">
+                    <p-steps [model]="itemsTripBooking" [readonly]="true"></p-steps>
+                </div>
+                <div class="card" *ngIf="!ticketService.bookTrip">
+                    <p-steps [model]="itemsTripCheck" [readonly]="true"></p-steps>
+                </div>
+                <router-outlet></router-outlet>
+            </section>
+        </div>
+    </div>
+    <div class="layout-mask"></div>
+</div>

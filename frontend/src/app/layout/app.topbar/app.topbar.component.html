@@ -1,0 +1,42 @@
+<div class="layout-topbar">
+    <a class="layout-topbar-logo" style="align-items: stretch;" routerLink="">
+        <img src="assets/images/HHC_logo.png" height="70px" alt="logo">
+        <span class="text-6xl ml-3">HIRTA Health Connector</span>
+    </a>
+    <div #topbarmenu class="layout-topbar-menu mt-2"
+        [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <!-- <button type="button" pRipple pButton (click)="toggleLanguage()"
+            class="hover:blue800 p-link p-button-text text-3xl" 
+            style="width: auto; margin-right: 2rem; padding: 0.625rem 1.25rem;"> -->
+            <span class="font-semibold text-3xl pb-1" style="width: auto; margin-right: 2rem; padding: 0.625rem 1.25rem;">ENG
+            <button type="button" pButton (click)="toggleLanguage()"
+            class="hover:blue800 p-link p-button-text text-3xl" 
+            ><p-inputSwitch class="ml-2 mr-2 text-3xl" [ngModel]="layoutService.language === 'es'"></p-inputSwitch></button>
+            SPA</span>
+        <!-- </button> -->
+        <button type="button" pRipple pButton (click)="toggleAudioMode()"
+            class="hover:blue800 p-link p-button-text text-3xl" 
+            style="width: auto; margin-right: 2rem; padding: 0.625rem 1.25rem;">
+            <i class="pi pi-{{ layoutService.audio ? 'volume-up' : 'volume-off' }} mr-2 text-3xl"></i>
+            <span class="font-semibold text-3xl pb-1">{{ (layoutService.audio ? 'AUDIO ON' : 'AUDIO OFF') | translate }}</span>
+        </button>
+        <button type="button" pRipple pButton (click)="toggleDarkMode()"
+            class="hover:blue800 p-link p-button-text text-3xl"            
+            style="width: auto; margin-right: 2rem; padding: 0.625rem 1.25rem;">
+            <i class="pi pi-{{ layoutService.dark ? 'sun' : 'moon' }} mr-2 text-3xl"></i>
+            <span class="font-semibold text-3xl pb-1">{{ 'TOGGLE COLORS' | translate }}</span>
+        </button>
+        <button type="button" pRipple pButton (click)="onStartOver()"
+            class="hover:blue800 p-link p-button-text text-3xl text-900"
+            style="width: auto; padding: 0.625rem 1.25rem;">
+            <i class="pi pi-undo mr-2 text-3xl"></i>
+            <span class="font-semibold text-3xl pb-1">{{ 'START OVER' | translate }}</span>
+        </button>
+        <button type="button" pRipple pButton (click)="lockScreen()"
+            class="hover:blue800 p-link p-button-text text-3xl text-900"
+            style="width: auto; padding: 0.625rem 1.25rem;">
+            <i class="pi pi-lock mr-2 text-3xl"></i>
+            <span class="font-semibold text-3xl pb-1"></span>
+        </button>            
+    </div>
+</div>

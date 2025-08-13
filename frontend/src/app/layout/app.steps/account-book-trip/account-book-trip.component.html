@@ -1,0 +1,163 @@
+<form role="form" #abtForm="ngForm" novalidate>
+    <div class="steps-content">
+        <p-card>
+            <ng-template *ngIf="loginOption" pTemplate="title">
+                <span class="text-5xl">
+                    {{ 'LOGINWITHINFO' | translate }}
+                </span>
+            </ng-template>
+
+            <ng-template *ngIf="!loginOption" pTemplate="title">
+                <span class="text-5xl">
+                    {{ 'BOOKASGUEST' | translate }}
+                </span>
+            </ng-template>
+
+            <ng-template pTemplate="subtitle">
+                <span class="text-3xl mb-0 font-italic font-semibold">
+                    {{'PERSONALINFO' | translate}}
+                </span>
+            </ng-template>
+
+            <ng-template pTemplate="content">
+                <div class="p-fluid">
+                    <p-checkbox 
+                    label = "{{ 'NOEMAIL' | translate }}"
+                    [(ngModel)]="disableEmailInput"
+                    [ngModelOptions]="{standalone: true}" 
+                    [binary]="true" 
+                    inputId="no-email"
+                    (onChange)="disableEmail()" />
+
+                    <div class="grid">
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="firstname"
+                                    class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    {{'FIRSTNAME' | translate}}
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input #fname name="firstName" #firstname="ngModel" id="firstname" pInputText
+                                        class="text-5xl" type="text" required ngxTouchKeyboard
+                                        ngxTouchKeyboardFullScreen #firstnameKeyboard="ngxTouchKeyboard"
+                                        (focus)="firstnameKeyboard.openPanel()" (blur)="firstnameKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.firstname"
+                                        [ngClass]="{'ng-dirty': (firstname.invalid && submitted) || (firstname.dirty && firstname.invalid) }"
+                                        maxlength="40" />
+                                </div>
+                                <div class="col-offset-4 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="firstname.invalid">
+                                        {{'FIRSTNAME' | translate}} {{'REQUIRED' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="email"
+                                    class="mb-2 md:col-2 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    {{'EMAIL' | translate}}
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="email" #email="ngModel" id="email" type="text" email="true"
+                                        [required]="useEmail" pInputText class="text-5xl"
+                                        ngxTouchKeyboard ngxTouchKeyboardFullScreen inputmode="email"
+                                        #emailKeyboard="ngxTouchKeyboard" (focus)="emailKeyboard.openPanel()"
+                                        (blur)="emailKeyboard.closePanel()" 
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.email"
+                                        [ngClass]="{'ng-dirty': (email.invalid && submitted) || (email.dirty && email.invalid), 'hide-email': !useEmail }"
+                                        maxlength="128"
+                                        [disabled]="!useEmail" />
+                                </div>
+                                <div class="col-offset-2 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="!ticketService.ticketInformation.personalInformation.email && useEmail">
+                                        {{'EMAIL' | translate}} {{'REQUIRED' | translate}}
+                                    </span> <span class="p-error" 
+                                        *ngIf="ticketService.ticketInformation.personalInformation.email && email.invalid">
+                                        {{'EMAIL' | translate}} {{'INVALID' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label htmlFor="lastname"
+                                    class="mb-2 md:col-4 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    {{'LASTNAME' | translate}}
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="lastName" #lastname="ngModel" id="lastname" type="text" required
+                                        pInputText class="text-5xl" ngxTouchKeyboard ngxTouchKeyboardFullScreen
+                                        #lastnameKeyboard="ngxTouchKeyboard" (focus)="lastnameKeyboard.openPanel()"
+                                        (blur)="lastnameKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.lastname"
+                                        [ngClass]="{ 'ng-dirty': (lastname.invalid && submitted) || (lastname.dirty && lastname.invalid) }"
+                                        maxlength="40" />
+                                </div>
+                                <div class="col-offset-4 md:col-8 p-0 pl-1">
+                                    <span class="p-error" *ngIf="lastname.invalid">
+                                        {{'LASTNAME' | translate}} {{'REQUIRED' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="field grid">
+                                <label for="phone"
+                                    class="col-12 mb-2 md:col-2 md:mb-0 text-4xl font-semibold justify-content-end">
+                                    {{'PHONE' | translate}}
+                                </label>
+                                <div class="md:col-8 pb-0">
+                                    <input name="phone" #phone="ngModel" id="phone" class="text-5xl" type="text"
+                                        [required]="true" pInputText pKeyFilter="int" maxlength="10" ngxTouchKeyboard
+                                        ngxTouchKeyboardFullScreen inputmode="tel" #phoneKeyboard="ngxTouchKeyboard"
+                                        (focus)="phoneKeyboard.openPanel()" (blur)="phoneKeyboard.closePanel()"
+                                        [(ngModel)]="ticketService.ticketInformation.personalInformation.phone" pattern="^[0-9]{10}$"
+                                        [ngClass]="{'ng-dirty': (phone.invalid && submitted) || (phone.dirty && phone.invalid) }" />
+                                </div>
+                                <div class="col-offset-2 md:col-8 p-0 pl-1">
+                                    <span class="p-error"
+                                        [ngStyle]="{visibility: !ticketService.ticketInformation.personalInformation.phone ? 'visible' : 'hidden'}">
+                                        {{'PHONE' | translate}} {{'REQUIRED' | translate}}
+                                    </span> <span class="p-error" 
+                                        *ngIf="ticketService.ticketInformation.personalInformation.phone && phone.invalid">
+                                        {{'INVALID PHONE' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            
+            <!-- timeout dialog box -->
+            <p-dialog 
+                [modal]="true" 
+                [(visible)]="timeoutDialogVisible" 
+                [draggable]="false"
+                [closable]="false"
+                [style]="{ 'width': '80%', 'font-size': '2.2em' }">
+                    <h1>{{'Are you still there?'| translate}}</h1>
+                    <p>{{'SESSIONINFO'| translate}}</p>
+            <div style="text-align: center;">
+                <p-button 
+                    label="{{'I\'m still here' | translate}}" 
+                    (onClick)="toggleDialog()"
+                    [style]="{ 'font-size': '0.8em', 'font-weight': 'bold' }">
+                </p-button>
+            </div>
+            </p-dialog>
+
+            <ng-template pTemplate="footer">
+                <div class="grid grid-nogutter justify-content-between">
+                    <button pButton pRipple label="{{ 'Back' | translate }}" (click)="[prevPage(), gaService.gaPageView('HIRTA Kiosk')]" icon="pi pi-angle-left"
+                        class="p-button-lg p-button-raised h-5rem text-4xl font-semibold">
+                    </button>
+                    <button pButton pRipple label="{{ 'Next' | translate}}" (click)="[nextPage(), gaService.gaPageView('destination')]" icon="pi pi-angle-right" iconPos="right"
+                        class="p-button-lg p-button-raised h-5rem text-4xl font-semibold" [disabled]="!abtForm.valid">
+                    </button>
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+</form>
