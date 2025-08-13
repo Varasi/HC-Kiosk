@@ -12,7 +12,7 @@
 7. Install the required packages:
     - On Windows:
         `pip install -r requirements.txt`
-8. Replace the AWS Account ID, Region in the app.py 
+8. Replace the AWS Account ID, Region in the app.py . Here env can be prod, dev, or uat.
 9. Set the AWS credentials using the AWS CLI:
     - Run `aws configure` and enter your AWS Access Key ID, Secret Access Key, region, and output format.
 10. Navigate to the frontend directory:
@@ -30,8 +30,8 @@
         - `via_client_secret`
         - `via_api_key`
         - `via_api_url`
-    - The name of the secrets should be <env>_credentials. here env can be prod, dev, or test. The env should match the variable in app.py
-14. create an empty folder 'website' in the root directory of the project if does not exist.
+    - The name of the secrets should be <env>_credentials. The env should match the variable in app.py
+14. Create an empty folder 'website' in the root directory of the project if does not exist. In the first deployment comment out the s3 bucket deployment as the frontend files are not yet built.
 15. Deploy the backend:
     - Run `cdk bootstrap` to set up the CDK environment.
     - Run `cdk deploy` to deploy the backend resources.

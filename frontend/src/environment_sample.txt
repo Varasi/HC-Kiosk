@@ -7,18 +7,18 @@ export const environment = {
   // deployment: "Name",  //dev, prod, etc.  //not used
   // appName: "Name", //Health Connector or some other name  //not used
 
-  trip_origin: "Dallas County Hospital", //city or facilty name
+  trip_origin: "", //city or facilty name
 
-  kiosk_lat: "41.83360314324577",  //physical location of kiosk (latitude)
-  kiosk_lng: "-94.09353101883748", //physical location of kiosk (longitude)
-  kiosk_address: "610 10th St, Perry, IA 50220, United States", //physical location of kiosk (address)
+  kiosk_lat: "",  //physical location of kiosk (latitude)
+  kiosk_lng: "", //physical location of kiosk (longitude)
+  kiosk_address: "", //physical location of kiosk (address)
 
   hirta_via_account_name: "Health_Connector", //while booking trip in kiosk, it is used as sub_service
 
-  southwestLat: 40.62844733741235, //southwest corner of the map (latitude) map area restriction
-  southwestLng: -95.51470502550431, //southwest corner of the map (longitude)
-  northeastLat: 42.94950757503583, //northeast corner of the map (latitude)
-  northeastLng: -91.7188823451054, //northeast corner of the map (longitude)
+  southwestLat: , //southwest corner of the map (latitude) map area restriction
+  southwestLng: , //southwest corner of the map (longitude)
+  northeastLat: , //northeast corner of the map (latitude)
+  northeastLng: , //northeast corner of the map (longitude)
 
   user_max_time: 1 * 60 * 1000, // time till the Are you still there? box pops up
   user_max_time_warn: 1 * 60 * 1000, // time to click Yes I'm still here before being bounced to homepage
@@ -27,7 +27,7 @@ export const environment = {
 
   api_url: "url", ends with '/'
 
-  ga_tag_id: "G-MJ4EX0L1S2",
+  ga_tag_id: "",
   google_tag_mgr: "",
   cognito_client_id: "authentication cleint id",
   cognito_user_pool_id: "user pool id",
@@ -40,5 +40,5 @@ export const environment = {
   // client_id: "client id",
   // client_secret: "client secret",
 
-  region: 'ap-south-1'
+  region: 'region'
 };
